@@ -2,16 +2,13 @@
 #define VEHICLE_H
 
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 #include <string>
-#include <set>
 #include <cstdlib>
 #include <ctime>
 
 using namespace std;
-
-// Set to store currently generated vehcile ids to ensure uniqueness
-set<int> generated_vehicle_ids;
 
 // Struct for Vehicle
 struct Vehicle
@@ -24,8 +21,12 @@ struct Vehicle
     string destination_node;   
     char status;            // Unused
     float time_of_arrival;  // Unused
+  
+    // Static storage for generated vehicles (to ensure unique IDs)
+    static unordered_map<int , Vehicle*> generated_vehicle_ids;
 
-    // Constructor for vehicle 
+    // Constructor for vehicle for user generated custom vechicles
+    // Incase of duplicate vehicles, the users generated vehicle will be prioritized
     Vehicle(int v_id, int v_priority, string v_current_node, string v_destination_node)
     {
         id = v_id;
@@ -36,6 +37,14 @@ struct Vehicle
         //UNUSED
         status = 'a';
         time_of_arrival = 0;
+
+        // Deletes the duplicate vehicle if it already existed in the database
+        if(generated_vehicle_ids.find(v_id) == generated_vehicle_ids.end())
+        {
+            delete generated_vehicle_ids[v_id];
+        }
+
+        generated_vehicle_ids[id] = this;
     }
 
     // Random Vehicle Generation
@@ -59,13 +68,13 @@ struct Vehicle
             id = rand() % 900 + 100;
         } while (generated_vehicle_ids.find(id) != generated_vehicle_ids.end());
 
-        generated_vehicle_ids.insert(id);
-
         current_node = generation_node;
         destination_node = arrival_node;
 
         status = 'a';
         time_of_arrival = 0;
+
+        generated_vehicle_ids[id] = this;
 
         
     }
@@ -90,5 +99,9 @@ struct Vehicle
     }
 
 };
+
+// Definition of the static member
+unordered_map<int, Vehicle*> Vehicle::generated_vehicle_ids;
+
 
 #endif // VEHICLE_H
