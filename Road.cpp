@@ -1,6 +1,6 @@
 #include <string>
-#include <list>
 #include "Vehicle.h"
+#include "Data_Structures/Linked_List.h"
 using namespace std;
 
 // Struct for egde (roads)
@@ -18,7 +18,7 @@ struct Road
     char status;            // 'b' blocked , 'a' active , 'c' conjestion , 'i' inactive
 
     // Vector to hold current vehicles on road
-    list<Vehicle> vehicles_on_road;
+    List vehicles_on_road;
 
     // Road Constructor
     Road (string r_name , float r_distance , int r_capacity)
@@ -44,7 +44,7 @@ struct Road
         }
         else
         {
-            vehicles_on_road.push_back(v);
+            vehicles_on_road.insert(v);
 
             // Update Conjestion
             veh_count++;

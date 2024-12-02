@@ -1,14 +1,17 @@
 #include <iostream>
-#include <chrono>
-#include <thread>
+#include "Data_Structures/Linked_List.h"
+#include "Vehicle.h"
 
-using namespace std;
+int main()
+{
+    Vehicle temp(100 , 100 , " " , " ");
+    Vehicle temp2(99 , 99 , " " , " ");
+    Vehicle temp4(101 , 99 , " " , " ");
+    List l;
+    l.insert(temp);
+    l.insert(temp2);
 
-int main() {
-    for (int i = 0; i <= 100; i++) {
-        cout << "\rProgress: " << i << "%" << flush;  // Use '\r' to overwrite the line
-        this_thread::sleep_for(chrono::milliseconds(50)); // Simulate work
-    }
-    cout << endl;  // Move to the next line after completion
-    return 0;
+    cout << l.exists(temp4) << endl;
+
+    l.print();
 }

@@ -22,7 +22,7 @@ Currently Using :
 2. Junction Structure
     Stores junction information and implements signal functionlity using list
 
-3. Vehicle Set
+3. Vehicle Hashmap
     Stores all generated vehicles and ensure no duplicate ids are generated
 
 4. Vehicle Structure
@@ -36,7 +36,8 @@ Currently Using :
 To Implement :
 
 1. Map 
-    Will simulate the city and its traffic
+    Will represent the map using spare adjaceny matrix
+    Currently trying to print map
 
 2. File handling
 
@@ -58,16 +59,20 @@ To Implement :
 
 6. Check that the junction can exist before making it
 
-7. In custom vehicle generation, ensure no duplicate vehicle is generated
+7. Need to make custom data structures 
+
+
 
 
 
 list
 Graph
 Class with nodes
+Hash map
+
+
 Can implement sorting and array for showing vehicles at signal
 Will implement File handling
-Hash map can be made for storing vehicles 
 Queue can be used at signals for priority queue
 Recursion can be used in binary trees when showing sorted vehicles via id at signal
 Can implement an array with sorting for priority vehicles in map to highlight them

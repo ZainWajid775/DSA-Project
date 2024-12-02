@@ -1,8 +1,10 @@
 #include <iostream>
-#include <vector>
 #include <string>
 #include <list>
 #include "Vehicle.h"
+#include "Data_Structures/Linked_List.h"
+#include "Data_Structures/Vector.h"
+
 
 using namespace std;
 
@@ -26,14 +28,14 @@ struct Junction
     }
 
     // Signal Functionality
-    list <Vehicle> signal_queue;   // Stores vehicles currently at signal
+    List signal_queue;   // Stores vehicles currently at signal
     
     // Checks and adds vehicle to the queue if there is space
     bool add_vehicle(Vehicle v)       
     {
         if(current_veh_count < capacity)
         {
-            signal_queue.push_back(v);
+            signal_queue.insert(v);
             current_veh_count++;
             return true;
         }
@@ -46,14 +48,12 @@ struct Junction
     // Checks if the vehicle is in list and removes it 
     bool remove_vehicle(const Vehicle& vehicle)
     {
-        for(const Vehicle& v : signal_queue)
+
+        if(signal_queue.exists(vehicle))
         {
-            if(v.id == vehicle.id)
-            {
-                signal_queue.remove(v);
-                current_veh_count--;
-                return true;
-            }
+            signal_queue.remove(vehicle);
+            current_veh_count--;
+            return true;
         }
         return false;
     }
