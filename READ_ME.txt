@@ -1,8 +1,17 @@
-Header Files
+1. Vehicle.h -> Uses hashmap
+2. Road.cpp -> Includes vehicle.h for roads , Includes Linked_List.h for vehcile storage 
+3. Junction.cpp -> Includes vehicle.h for signals , Includes Linked_List.h for signals
+4. Map.cpp -> Includes Road.cpp and Junction.cpp for maps , Includes Vector.h for map functionality
 
-1. Vehicle.cpp
-2. Road.cpp
-3. Junction.cpp -> Includes vehicle.cpp for signals
+Data structures
+1. Vector.h
+    Vector , resize x 2 , operator[] , push_back , get_size , get_capacity , clear , empty 
+
+2. Linked_List.h
+    List , insert , remove , exists , print , ~List
+
+3. Hashmap.h
+    
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -31,7 +40,11 @@ Currently Using :
 5. Map
     Uses a sparse adjaceny matrix to create a map and ensure effecient memory usage , 1d vector for juntions and 2d for the roads
 
+6. Linked_List.h
 
+7. Hashmap.h
+
+8. Vector.h
 ---------------------------------------------------------------------------------------------------------------------------------
 To Implement :
 
@@ -52,7 +65,7 @@ To Implement :
     Update the junction
     Update the map
 
-    For vehicle, in simualtion mode, vehicle should move on its own after checking path is available
+    For vehicle, in simulation mode, vehicle should move on its own after checking path is available
     For user controlled simulation, user should be able to input the vehicle id and move it manually while other vehicles move on their own
 
 5. Signal 
@@ -65,10 +78,10 @@ To Implement :
 
 
 
-list
-Graph
+Linked_List
+Graph using adjaceny matrix
 Class with nodes
-Hash map
+Hash map (have to make custom)
 
 
 Can implement sorting and array for showing vehicles at signal
