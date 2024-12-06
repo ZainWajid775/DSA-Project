@@ -5,7 +5,6 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include "Data_Structures/Hashmap.h"
 
 using namespace std;
 
@@ -40,7 +39,7 @@ struct Vehicle
         // Deletes the duplicate vehicle if it already existed in the database
         if(generated_vehicle_ids.find(v_id) == generated_vehicle_ids.end())
         {
-            delete generated_vehicle_ids[v_id];
+            generated_vehicle_ids.erase(v_id);
         }
 
         generated_vehicle_ids[id] = this;

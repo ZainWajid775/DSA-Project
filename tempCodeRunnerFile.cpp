@@ -1,1 +1,1 @@
-
+ start_simulation(&map);

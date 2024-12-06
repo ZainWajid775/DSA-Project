@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <string>
 #include <list>
@@ -11,36 +12,39 @@ using namespace std;
 struct Junction
 {
     // Node information
-    string name;            // Name of the junction 
-    int x ,y;               // Coordinates in 2D plane
-    int capacity;           // Maximum number of vehicles that can be stored
-    int current_veh_count;  // Number of vehicles currently at junction
+    string name;                // Name of the junction 
+    int r , c;                  // Coordinates in 2D plane
+    int capacity;               // Maximum number of vehicles that can be stored
+    int current_veh_count;      // Number of vehicles currently at junction
+    int signal_timer;           // Signal timer for traffic light
+    bool traffic_light;         // Traffic Light functionality
 
     // Junction Constructor
-    Junction(string j_name , int j_x , int j_y , int j_capacity)
+    Junction(string j_name , int j_r , int j_c , int j_capacity , int j_timer)
     {
         name = j_name;
-        x = j_x;
-        y = j_y;
+        r = j_r;
+        c = j_c;
         capacity = j_capacity;
         current_veh_count = 0;
+        signal_timer = j_timer;
+    }
+
+    string get_veh_count()
+    {
+        return(to_string(current_veh_count));
     }
 
     // Signal Functionality
     List signal_queue;   // Stores vehicles currently at signal
     
     // Checks and adds vehicle to the queue if there is space
-    bool add_vehicle(Vehicle v)       
+    void add_vehicle(Vehicle v)       
     {
         if(current_veh_count < capacity)
         {
             signal_queue.insert(v);
             current_veh_count++;
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
@@ -56,4 +60,23 @@ struct Junction
         }
         return false;
     }
+
+    int get_signal_timer()
+    {   
+        return signal_timer;
+    }
+
+    void change_traffic_light()
+    {
+        if(traffic_light)
+        {
+            traffic_light = false;
+        }
+        else
+        {
+            traffic_light = true;
+        }
+    }
+
 };
+

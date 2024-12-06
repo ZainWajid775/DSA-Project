@@ -11,6 +11,8 @@ struct Road
     bool exists;            // Does road exist
     float distance;         // Kilometers
     int capacity;           // Capacity
+    string start_junction;  // Start junction
+    string end_junction;    // End junction
 
     // Vehicle information on road
     int veh_count;          // Current vehicle count
@@ -21,11 +23,13 @@ struct Road
     List vehicles_on_road;
 
     // Road Constructor
-    Road (string r_name , float r_distance , int r_capacity)
+    Road (string r_name , float r_distance , int r_capacity , string r_start_junction , string r_end_junction)
     {
         name = r_name;
         distance = r_distance;
         capacity = r_capacity;
+        start_junction = r_start_junction;
+        end_junction = r_end_junction;
 
         // Default values
         exists = true;

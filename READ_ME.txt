@@ -9,8 +9,6 @@ Data structures
 
 2. Linked_List.h
     List , insert , remove , exists , print , ~List
-
-3. Hashmap.h
     
 
 ---------------------------------------------------------------------------------------------------------------------------------
@@ -21,6 +19,8 @@ Edge -> Road
 Vertice -> Junction
 
 Each vertice has a priority queue for handling traffic light functionality
+
+System can only have 1 road in a single connection eg A to B can only have 1 road
 
 ---------------------------------------------------------------------------------------------------------------------------------
 Currently Using :
@@ -39,18 +39,22 @@ Currently Using :
 
 5. Map
     Uses a sparse adjaceny matrix to create a map and ensure effecient memory usage , 1d vector for juntions and 2d for the roads
+    Roads are added by taking r and c from the 1d array that stores junctions
+    Road matrix is of size junction count x 2 to account for all the road paths
+
+    Junctions:       Roads:(Null for no road) (Row index is starting junction and column index is ending junction)
+    A (0,0)             A B C D
+    B (0,1)          A
+    C (1,0)          B
+    D (1,1)          C
+                     D
+
 
 6. Linked_List.h
 
-7. Hashmap.h
-
-8. Vector.h
+7. Vector.h
 ---------------------------------------------------------------------------------------------------------------------------------
 To Implement :
-
-1. Map 
-    Will represent the map using spare adjaceny matrix
-    Currently trying to print map
 
 2. File handling
 
@@ -69,6 +73,7 @@ To Implement :
     For user controlled simulation, user should be able to input the vehicle id and move it manually while other vehicles move on their own
 
 5. Signal 
+    currently adding in simulation signals no manual override available
 
 6. Check that the junction can exist before making it
 
@@ -81,8 +86,7 @@ To Implement :
 Linked_List
 Graph using adjaceny matrix
 Class with nodes
-Hash map (have to make custom)
-
+Hash map
 
 Can implement sorting and array for showing vehicles at signal
 Will implement File handling
