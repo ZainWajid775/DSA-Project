@@ -53,6 +53,15 @@ Currently Using :
 6. Linked_List.h
 
 7. Vector.h
+
+8. Simualtion.h 
+    Used to run the simulation
+    Currently only updates traffic lights
+
+9. File handling
+    Currently can retrieve username and password from accounts.txt in a 1d vector
+
+    
 ---------------------------------------------------------------------------------------------------------------------------------
 To Implement :
 
@@ -78,6 +87,8 @@ To Implement :
 6. Check that the junction can exist before making it
 
 7. Need to make custom data structures 
+
+8. Path Finding
 
 
 

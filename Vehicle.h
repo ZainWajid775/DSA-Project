@@ -19,6 +19,7 @@ struct Vehicle
     string destination_node;   
     char status;            // Unused
     float time_of_arrival;  // Unused
+    int movement_counter;   // Random number for number of moves to make in map
   
     // Static storage for generated vehicles (to ensure unique IDs)
     static unordered_map<int , Vehicle*> generated_vehicle_ids;
@@ -31,6 +32,7 @@ struct Vehicle
         priority = v_priority;
         current_node = v_current_node;
         destination_node = v_destination_node;
+        type = "User Generated";
 
         //UNUSED
         status = 'a';
@@ -46,7 +48,7 @@ struct Vehicle
     }
 
     // Random Vehicle Generation
-    Vehicle (string generation_node , string arrival_node)
+    Vehicle (string generation_node , string arrival_node , int max_moves)
     {   
         int random_type = rand() % 5 + 1;
         switch(random_type)
@@ -71,6 +73,7 @@ struct Vehicle
 
         status = 'a';
         time_of_arrival = 0;
+        movement_counter = random_movement_generation(max_moves);
 
         generated_vehicle_ids[id] = this;
 
@@ -81,6 +84,12 @@ struct Vehicle
     int random_node_generation()
     {
         return rand() % 10 + 1;
+    }
+
+    // Random number of moves
+    int random_movement_generation(int max)
+    {
+        return rand() % max + 1;
     }
 
 

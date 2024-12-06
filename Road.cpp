@@ -38,7 +38,8 @@ struct Road
         status = 'a';
     }
 
-    // Update road cases
+    // Vehicle Movement Functions
+
     bool add_to_road(Vehicle v)
     {   
         // Dont add to road if it is disabled, blocked or at max capacity
@@ -72,7 +73,27 @@ struct Road
 
     bool remove_from_road(Vehicle v)
     {
+        if(vehicles_on_road.exists(v))
+        {
+            vehicles_on_road.remove(v);
+            veh_count--;
+            conjestion = (float)veh_count / capacity * 100;
 
+            if(conjestion > 80)
+            {
+                status = 'c';
+            }
+            else if(conjestion > 100)
+            {
+                status = 'b';
+            }
+            else if(conjestion < 80)
+            {
+                status = 'a';
+            }
+            return true;
+        }
+        return false;
     }
 
     // Change road status

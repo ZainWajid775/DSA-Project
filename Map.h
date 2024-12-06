@@ -5,12 +5,17 @@
 #include <chrono>
 #include <thread>
 #include <iomanip>
+#include <set>
+#include <cstdlib>
+#include <pthread.h>
+#include <atomic>
 #include "Road.cpp"
 #include "Junction.cpp"
 #include "Data_Structures/Vector.h"
 
 
 using namespace std; 
+
 
 class Map
 {
@@ -78,7 +83,7 @@ class Map
                     Road_Matrix[s_j_r][e_j_c] = r;
                     if (is_two_way)
                     {
-                        Road_Matrix[e_j_c][s_j_r] = r; // Add bidirectional road
+                        Road_Matrix[e_j_c][s_j_r] = new Road(r->name, r->distance, r->capacity, r->end_junction, r->start_junction); // Add bidirectional road
                     }
                 }
             }
@@ -221,15 +226,103 @@ class Map
             }
         }
 
-        void temp()
+        void display_map()
         {
-            for(int i = 0; i < Junction_Matrix.size(); i++)
-            {
-                Junction *temp = Junction_Matrix[i];
-                cout << temp->get_veh_count() << endl;
-            }
-            
+            display_junctions();
+            display_road_map();
         }
+
+
+        // Movement Functions
+
+        // Removal function
+        // Retrieve front car and remove it from queue
+        Vehicle road_cycle_remove(Road* road)
+        {
+            Vehicle front = road->vehicles_on_road.get_front();
+            road->remove_from_road(front);
+            return front;
+        }
+
+        Vehicle junction_cycle_remove(Junction* junction)
+        {
+            Vehicle front = junction->signal_queue.get_front();
+            junction->remove_vehicle(front);
+            return front;
+        }
+
+        // Add function
+        // First check if the structure has space and then add it
+        bool road_cycle_add(Road* road, Vehicle v)
+        {
+            if (road->add_to_road(v))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        bool junction_cycle_add(Junction* junction, Vehicle v)
+        {
+            if (junction->add_vehicle(v))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        bool road_to_junction(Road* road, Junction* junction)
+        {
+            Vehicle v = road_cycle_remove(road);
+            if (junction_cycle_add(junction, v))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        bool junction_to_road(Junction* junction, Road* road)
+        {
+            Vehicle v = junction_cycle_remove(junction);
+            if (road_cycle_add(road, v))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        // Vehicle Movement
+        void move_vehicle(Junction* junction, Road* road)
+        {
+            if(junction->traffic_light)
+            {
+                if (junction_to_road(junction, road))
+                {
+                    cout << "Vehicle moved from Junction " << junction->name << " to Road " << road->name << endl;
+                }
+                else
+                {
+                    cout << "Unable to move vehicle from Junction " << junction->name << " to Road " << road->name << endl;
+                }
+            }
+        }
+
+        void move_vehicle(Road* road , Junction* junction)
+        {
+            // Move vehicle from road to junction
+            if (road_to_junction(road, junction))
+            {
+                cout << "Vehicle moved from Road " << road->name << " to Junction " << junction->name << endl;
+            }
+            else
+            {
+                cout << "Unable to move vehicle from Road " << road->name << " to Junction " << junction->name << endl;
+            }
+        }
+
+
 };
+
+
 
 #endif

@@ -44,6 +44,16 @@ class List
             temp->next = node;
         }
 
+        bool is_empty()
+        {
+            return head == nullptr;
+        }
+
+        Vehicle get_front()
+        {
+            return head->vehicle;
+        }
+
         void remove(Vehicle v)
         {
             if(head->vehicle.id == v.id)

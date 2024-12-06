@@ -39,13 +39,15 @@ struct Junction
     List signal_queue;   // Stores vehicles currently at signal
     
     // Checks and adds vehicle to the queue if there is space
-    void add_vehicle(Vehicle v)       
+    bool add_vehicle(Vehicle v)       
     {
         if(current_veh_count < capacity)
         {
             signal_queue.insert(v);
             current_veh_count++;
+            return true;
         }
+        return false;
     }
 
     // Checks if the vehicle is in list and removes it 
