@@ -80,13 +80,8 @@ struct Vehicle
         
     }
 
-    // Random node generation for source and target
-    int random_node_generation()
-    {
-        return rand() % 10 + 1;
-    }
-
     // Random number of moves
+    // Max is number of roads
     int random_movement_generation(int max)
     {
         return rand() % max + 1;

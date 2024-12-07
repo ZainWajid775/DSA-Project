@@ -27,11 +27,18 @@ class Map
         vector<vector<Road*> > Road_Matrix;
 
         int num_of_junctions;
+        string map_name;
 
         // Constructor
-        Map(int m_junctions)
+        Map(string m_name , int m_junctions)
         {
+            map_name = m_name;
             num_of_junctions = m_junctions;
+            Road_Matrix.resize(num_of_junctions * 2 , vector<Road*>(num_of_junctions * 2, nullptr));
+        }
+
+        void road_resize()
+        {
             Road_Matrix.resize(num_of_junctions * 2 , vector<Road*>(num_of_junctions * 2, nullptr));
         }
 
@@ -102,32 +109,32 @@ class Map
             // Iterate through rows
             for (int row = 0; row < max_rows; row++)
             {
-                for (int line = 0; line < 3; line++) // Each junction will have 3 lines
+                for (int line = 0; line < 3; line++) // Each junction will have 3 lines (0, 1, 2)
                 {
                     cout << "|";
                     for (int col = 0; col < max_cols; col++)
                     {
-                        string cell_content = " ";
+                        string cell_content = "";  // Default content for blank lines
                         string color_code = "\033[0m"; // Default color (reset)
 
-                        bool has_incoming_road = false;
+                        bool junction_exists = false;
 
-                        // Find and display junction name at the coordinate
-                        for (int i = 0 ; i < Junction_Matrix.size() ; i++) 
+                        // Find the junction at the current coordinate
+                        for (auto& temp : Junction_Matrix)
                         {
-                            Junction *temp;
-                            temp = Junction_Matrix[i];
-
                             if (temp->r == row && temp->c == col)
                             {
+                                junction_exists = true;
+
                                 if (line == 1) // Middle line for junction name
                                 {
                                     cell_content = temp->name;
 
-                                    // Check if any roads are leading to this junction (check for incoming roads)
+                                    // Check for incoming roads and set color accordingly
+                                    bool has_incoming_road = false;
                                     for (size_t i = 0; i < Road_Matrix.size(); i++)
                                     {
-                                        if (Road_Matrix[i][col] != NULL) // Road leads to this column (incoming road)
+                                        if (Road_Matrix[i][col] != nullptr) // Road leads to this column
                                         {
                                             has_incoming_road = true;
                                             break;
@@ -137,46 +144,36 @@ class Map
                                     // Set color based on traffic light state if there are incoming roads
                                     if (has_incoming_road)
                                     {
-                                        if (temp->traffic_light)
-                                        {
-                                            color_code = "\033[32m"; // Green for traffic light ON
-                                        }
-                                        else
-                                        {
-                                            color_code = "\033[31m"; // Red for traffic light OFF
-                                        }
+                                        color_code = temp->traffic_light ? "\033[32m" : "\033[31m"; // Green for ON, Red for OFF
                                     }
                                 }
-
-                                // Third line for vehicle count
-                                if (line == 2)
+                                else if (line == 2) // Line for vehicle count
                                 {
-                                    string vehicle_count_str = temp->get_veh_count(); // Get vehicle count
-                                    cout << string((cell_width - vehicle_count_str.size()) / 2, ' ') << vehicle_count_str
-                                         << string(cell_width - (cell_width - vehicle_count_str.size()) / 2 - vehicle_count_str.size(), ' ');
+                                    cell_content = "Veh: " + temp->get_veh_count();
                                 }
                                 break;
                             }
                         }
 
-                        if (line == 1)
+                        // If no junction exists and it's the middle line, display "Empty"
+                        if (!junction_exists && line == 1)
                         {
-                            int padding = (cell_width - cell_content.size()) / 2;
-                            cout << string(padding, ' ') << color_code << cell_content
-                                 << "\033[0m" // Reset color after name
-                                 << string(cell_width - padding - cell_content.size(), ' ');
+                            cell_content = "Empty";
                         }
-                        else if (line != 2)
-                        {
-                            cout << string(cell_width, ' ');
-                        }
-                        cout << "|";
+
+                        // Format and print cell content
+                        int padding = (cell_width - cell_content.size()) / 2;
+                        cout << string(padding, ' ') << color_code << cell_content
+                             << "\033[0m" // Reset color after name
+                             << string(cell_width - padding - cell_content.size(), ' ') << "|";
                     }
                     cout << "\n";
                 }
+                // Print row separator
                 cout << "+" << string((cell_width + 1) * max_cols, '-') << "+\n";
             }
         }
+
 
 
 
@@ -292,32 +289,34 @@ class Map
         }
 
         // Vehicle Movement
-        void move_vehicle(Junction* junction, Road* road)
+        bool move_vehicle(Junction* junction, Road* road)
         {
             if(junction->traffic_light)
             {
                 if (junction_to_road(junction, road))
                 {
-                    cout << "Vehicle moved from Junction " << junction->name << " to Road " << road->name << endl;
+                    return true;
                 }
                 else
                 {
-                    cout << "Unable to move vehicle from Junction " << junction->name << " to Road " << road->name << endl;
+                    return false;
                 }
             }
+            return false;
         }
 
-        void move_vehicle(Road* road , Junction* junction)
+        bool move_vehicle(Road* road , Junction* junction)
         {
             // Move vehicle from road to junction
             if (road_to_junction(road, junction))
             {
-                cout << "Vehicle moved from Road " << road->name << " to Junction " << junction->name << endl;
+                return true;
             }
             else
             {
-                cout << "Unable to move vehicle from Road " << road->name << " to Junction " << junction->name << endl;
+                return false;
             }
+            return false;
         }
 
 

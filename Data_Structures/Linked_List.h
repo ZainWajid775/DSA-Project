@@ -54,6 +54,20 @@ class List
             return head->vehicle;
         }
 
+        int size()
+        {
+            Node* temp = head;
+            int count = 0;
+
+            while(temp != nullptr)
+            {
+                count++;
+                temp = temp->next;
+            }
+
+            return count;
+        }
+
         void remove(Vehicle v)
         {
             if(head->vehicle.id == v.id)
@@ -104,6 +118,43 @@ class List
                 cout << temp->vehicle.id << endl;
                 temp = temp->next;
             }
+        }
+
+        int* duplicate_list()
+        {
+            int count = size();
+
+            int* arr = new int[count];
+
+            int i = 0;
+            Node* temp = head;
+            while(temp != nullptr)
+            {
+                arr[i] = temp->vehicle.id;
+                temp = temp->next;
+                i++;
+            }
+
+            return arr;
+        }
+
+        Vehicle return_vehicle(int id)
+        {
+            if(!is_empty())
+            {
+                Node* temp = head;
+
+                while(temp != nullptr)
+                {
+                    if(temp->vehicle.id == id)
+                    {
+                        return temp->vehicle;
+                    }
+                    temp = temp->next;
+                }
+            }
+
+            return Vehicle("ERROR" , "ERROR" , 404);
         }
 
         ~List()

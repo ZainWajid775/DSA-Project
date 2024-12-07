@@ -1,67 +1,59 @@
 #include <iostream>
-#include <pthread.h>
-#include <chrono>
+#include <thread>
+#include <atomic>
+#include <unistd.h>
 #include <iomanip>
+#include "Simulation.h"
 #include "Map.h"
 #include "File_Handling/File_Handling.h"
 
 using namespace std;
 
+vector<string> credentials = read_credentials();
 
-int main()
+int main() 
 {
-    //srand(time(0));
-//
-    //Map map(2);
-//
-    //Road r1("Road 1" , 10 , 10 , "A" , "B");
-    //Road r2("Road 2" , 10 , 10 , "B" , "C");
-//
-    //Junction A("A" , 0 , 0 , 10 , 1);
-    //Junction B("B" , 0 , 1 , 10 , 1);
-    //Junction C("C" , 1 , 0 , 10 , 3);
-    //Junction D("D" , 1 , 1 , 10 , 1);
-//
-    //map.add_junction(&A);
-    //map.add_junction(&B);
-    //map.add_junction(&C);
-    //map.add_junction(&D);
-//
-    //map.add_road(&r1 , true);
-    //map.add_road(&r2 , false);
-//
-    //system("clear");
+
+    // Initialize map with 4 junctions
+    Map map("Temp" , 3);
+
+    // Create roads
+    Road r1("Road 1", 10, 10, "A", "B");
+    Road r2("Road 2", 10, 10, "B", "C");
+
+    // Create junctions
+    Junction A("A", 0, 0, 10, 1);
+    Junction B("B", 0, 1, 10, 1);
+    Junction C("C", 1, 0, 10, 1);
+    Junction D("D", 1, 1, 10, 1);
+
+    // Add junctions and roads to the map
+    map.add_junction(&A);
+    map.add_junction(&B);
+    map.add_junction(&C);
+    map.add_junction(&D);
+    map.add_road(&r1, true);
+    map.add_road(&r2, false);
+
     //Vehicle v1("A" , "B" , 10);
-    //map.junction_cycle_add(&A , v1);
-    //map.display_map();
+    //Vehicle v2("A" , "B" , 10);
+    //Vehicle v3("A" , "B" , 10);
 //
+    //A.add_vehicle(v1);
+    //A.add_vehicle(v2);
+    //A.add_vehicle(v3);
+    //system("clear");
 //
-    //map.move_vehcle(&A , &r1);
-    //map.display_map();
+    //Map** map_container = new Map*[10];
+    //store_map(&map);
+    //map_container[0] = nullptr;
 //
-    //map.move_vehicle(&r1 , &B);
-    //map.display_map();
+    //read_map("Temp" , map_container , 0); 
+//
+    //cout << "Read" << endl;
+//
+    //map_container[0]->display_map();
 
-    
-    vector<string> creds;
-    creds = read_credentials();
-    for(const auto &c : creds)
-    {
-        cout << c << endl;
-    }
-
-    string x , y;
-    cin >> x;
-    cin >> y;
-
-    string t  = x+"|"+y;
-    for(const auto &c : creds)
-    {
-        if(t == c)
-        {
-            cout << "Valid cred";
-        }
-    }
-
+    std::cout << "__cplusplus: " << __cplusplus << std::endl;
 
 }

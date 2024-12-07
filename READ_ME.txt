@@ -61,7 +61,13 @@ Currently Using :
 9. File handling
     Currently can retrieve username and password from accounts.txt in a 1d vector
 
-    
+10. Bubble Sort
+    Return a sorted vehicle vector from junction after bubble sort
+    i.   Duplicate vehcile ids into a array using duplicate vehciles from linked list
+    ii.  Sort using Bubble sort
+    iii. Match ID to vehicle and add vechile to vector using return_vehicle from linked list
+
+
 ---------------------------------------------------------------------------------------------------------------------------------
 To Implement :
 
@@ -98,9 +104,10 @@ Linked_List
 Graph using adjaceny matrix
 Class with nodes
 Hash map
+File Handling
+Bubble sort
+Array
 
-Can implement sorting and array for showing vehicles at signal
-Will implement File handling
 Queue can be used at signals for priority queue
 Recursion can be used in binary trees when showing sorted vehicles via id at signal
 Can implement an array with sorting for priority vehicles in map to highlight them

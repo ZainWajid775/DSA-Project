@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include "Vehicle.h"
 #include "Data_Structures/Linked_List.h"
 using namespace std;
@@ -8,7 +9,6 @@ struct Road
 {
     // Road characteristics
     string name;            // Name of the road 
-    bool exists;            // Does road exist
     float distance;         // Kilometers
     int capacity;           // Capacity
     string start_junction;  // Start junction
@@ -32,7 +32,6 @@ struct Road
         end_junction = r_end_junction;
 
         // Default values
-        exists = true;
         veh_count = 0;
         conjestion = 0;
         status = 'a';
@@ -102,6 +101,11 @@ struct Road
         status = r_status;
     }
 
+    // Debugging function
+    void debug()
+    {
+        cout << name << " " << start_junction << " " << end_junction << endl;
+    }
 
 
 };
