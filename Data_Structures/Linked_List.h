@@ -25,6 +25,11 @@ class List
 
         List() : head(nullptr) {}
 
+        Node* get_head() const 
+        { 
+            return head; 
+        }
+
         void insert(Vehicle v)
         {
             Node* node = new Node(v);
