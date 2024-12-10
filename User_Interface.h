@@ -2,6 +2,10 @@
 #define USER_INTERFACE_H
 
 
+using namespace std;
+string continue_key = "Press the enter key to continue\n";    
+
+
 // For windows, use cin.get
 #ifdef WIN_32
 #include <cstdlib>
@@ -23,9 +27,6 @@ void enter_to_continue()
 
 #include <iostream>
 
-
-using namespace std;
-
 //Colour codes for custom text priting
 #define RESET   "\033[0m"
 #define RED     "\033[1;31m"
@@ -36,8 +37,6 @@ using namespace std;
 #define CYAN    "\033[1;36m"    
 
 // User Interface
-string continue_key = "Press the enter key to continue\n";    
-
 //Function to print a coloured line to improve readibility
 void line(string s)
 {
@@ -68,13 +67,6 @@ void line(string s)
             cout << endl << RESET;
     }
 
-}
-
-// Function to print "enter to continue" and wait for user input
-void enter_to_continue()
-{
-    cout << continue_key << '\n';
-    system("read");
 }
 
 
