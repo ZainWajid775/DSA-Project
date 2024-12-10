@@ -1,3 +1,7 @@
+Need to pass roads column index as current position in move from road to junction
+Vehicle should be deleted in main if counter reaches 0
+
+
 1. Vehicle.h -> Uses hashmap
 2. Road.cpp -> Includes vehicle.h for roads , Includes Linked_List.h for vehcile storage 
 3. Junction.cpp -> Includes vehicle.h for signals , Includes Linked_List.h for signals
@@ -110,4 +114,3 @@ Array
 
 Queue can be used at signals for priority queue
 Recursion can be used in binary trees when showing sorted vehicles via id at signal
-Can implement an array with sorting for priority vehicles in map to highlight them

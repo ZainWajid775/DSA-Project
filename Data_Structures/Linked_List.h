@@ -143,23 +143,20 @@ class List
             return arr;
         }
 
-        Vehicle return_vehicle(int id)
+        bool exists_in_list(Vehicle vehicle)
         {
-            if(!is_empty())
-            {
-                Node* temp = head;
+            Node* temp = head;
 
-                while(temp != nullptr)
+            while(temp != nullptr)
+            {
+                if(temp->vehicle == vehicle)
                 {
-                    if(temp->vehicle.id == id)
-                    {
-                        return temp->vehicle;
-                    }
-                    temp = temp->next;
+                    return true;
                 }
+                temp = temp->next;
             }
 
-            return Vehicle("ERROR" , "ERROR" , 404);
+            return false;
         }
 
         ~List()

@@ -2,87 +2,151 @@
 #define SIMULATION_H
 
 #include <iostream>
-#include <thread>
-#include <chrono>
 #include <cstdlib>
 #include "Map.h" 
 #include "Data_Structures/Vector.h"
 
 using namespace std;
 
-atomic<bool> keep_running(true); // Control flag for the thread
 
-void simulate_traffic_lights(Map &map) 
+
+void move_vehicle_road_to_junction(Map& map , Vehicle* vehicle)
 {
-    // A container of every thread
-    // Each thread will simulate a junction
-    vector<thread> threads;
+    // Get vehicles current position
+    int column = vehicle->current_node;
+    int row;
 
-    // Create a thread for each junction
-    for (auto& junction : map.Junction_Matrix) 
-    {   
-        // Create a new thread and add it to threads container
-        // Lambda passes each junction to the thread to so it works on its own copy of the junction
-        threads.emplace_back([junction, &map]() 
+    // Extract Row index
+    for(int i = 0 ; i < map.Road_Matrix.size() ; i++)
+    {
+        Vehicle temp = *vehicle;
+
+        if((map.Road_Matrix[i][column] != nullptr) && (map.Road_Matrix[i][column]->exists(temp)))
         {
-            while (keep_running) 
+            row = i;
+            break;
+        }
+    }
+    
+
+    // Check if the vehicle has any remaining moves
+    if(!(vehicle->movement_counter == 0))
+    {
+        // Check if the vehicle can move to junction
+        // Column index of the current road corresponds to the junction
+
+        // 1. Get junction data
+        Junction *temp = map.get_junction(column);
+
+        // 2. Check if junction has space
+        if(temp->has_space())
+        {
+            // 3. Update vehicle
+            vehicle->current_node = column;
+            vehicle->movement_counter--;
+
+            // 4. Move vehicle to junction
+            temp->add_vehicle(*vehicle);
+
+        }
+    
+    }
+
+
+    // Remove vehicle from its old road
+    map.Road_Matrix[row][column]->remove_from_road(*vehicle);
+    return;
+}
+
+void move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
+{
+    // Get vehicles current position
+    // Row index of Junction in road matrix shows next possible moves
+    int row = vehicle->current_node;
+
+    // Check if vehicle has any remaining moves
+    if((vehicle->movement_counter != 0))
+    {
+        // Check if the vehicle can move to road
+
+        // Iterate over all column of road matrix to get connected roads
+        // Roads are pushed into an array
+        // If a road is full , it is not pushed into the queue
+
+        // 1. Push in possible connections
+        vector<Road*> road_arr;
+        for(int i = 0 ; i < map.num_of_junctions ; i++)
+        {   
+            Road *temp = map.Road_Matrix[row][i];
+            if(temp != nullptr)
             {
-                // Check if the junction has any connected roads
-                bool has_connected_road = false;
-
-                for (const auto& road_row : map.Road_Matrix) 
+                if(temp->has_space())
                 {
-                    for (const auto& road : road_row) 
-                    {
-                        // If there is a road and it matches the junctions coordinates either way
-                        if (road != nullptr && (road->start_junction == junction->name || road->end_junction == junction->name)) 
-                        {
-                            has_connected_road = true;
-                            break;
-                        }
-                    }
-
-                    if (has_connected_road) 
-                    {
-                        break;
-                    }
-                }
-
-                // Update the traffic light if the junction is connected
-                // Thread sleeps until timer and then updates the traffic light
-                if (has_connected_road) 
-                {
-                    this_thread::sleep_for(chrono::seconds(junction->get_signal_timer()));
-                    junction->change_traffic_light();
-                } 
-                // Skip isolated junctions
-                else 
-                {
-                    break;
+                    road_arr.push_back(temp);
                 }
             }
         }
-        );
-    }
+        // Incase of no possible moves
 
-    // Seperate thread to display map after every cycle
-    thread display_thread([&map]() 
-    {
-        while (keep_running) 
+        if(road_arr.size() != 0)
         {
-            this_thread::sleep_for(chrono::seconds(1));
-            map.display_map(); 
-            cout << endl;
-        }
-    });
+            // 2. Sort road_arr according to road priority
+            // Priority based on road availability
+            int size = road_arr.size();
+            for(int i = 0 ; i < size - 1 ; i++)
+            {
+                for(int j = 0 ; j < size - i - 1 ; j++)
+                {
+                    // Ascending order
+                    float con_1 , con_2;
+                    con_1 = road_arr[j]->get_conjestion();
+                    con_2 = road_arr[j+1]->get_conjestion();
 
-    // Detach all threads to run independently
-    for (auto& t : threads) 
-    {
-        t.detach();
+                    if(con_1 > con_2)
+                    {
+                        Road *temp = road_arr[j];
+                        road_arr[j] = road_arr[j+1];
+                        road_arr[j+1] = temp;
+                    }
+                }
+            }
+
+            // 3. Move to road
+            // Extract column index of road to update current position
+
+            string selected_name = road_arr[0]->name;
+            for (int i = 0 ; i < map.Road_Matrix[row].size() ; i++)
+            {
+                Road *temp = map.Road_Matrix[row][i];
+                if(temp != nullptr)
+                {
+                    string name = temp->name;
+                    if(name == selected_name)
+                    {   
+                        vehicle->current_node = i;
+                        break;
+                    }
+                }
+            }
+
+            road_arr[0]->add_to_road(*vehicle);
+            vehicle->movement_counter--;
+            
+        }
+        
     }
 
-    display_thread.detach();
+    // Delete the vehicle
+    // Get junction first
+    for(int i = 0 ; i < map.num_of_junctions ; i++)
+    {
+        if(map.Junction_Matrix[i]->has_vehicle(*vehicle))
+        {
+            map.Junction_Matrix[i]->remove_vehicle(*vehicle);
+            break;
+        }
+    }
+
 }
 
 

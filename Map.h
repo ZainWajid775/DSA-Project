@@ -13,6 +13,10 @@
 #include "Junction.cpp"
 #include "Data_Structures/Vector.h"
 
+string red = "\033[31m";
+string yellow = "\033[33m";
+string green = "\033[32m";
+string reset = "\033[0m";
 
 using namespace std; 
 
@@ -63,8 +67,14 @@ class Map
             return j1_e && j2_e;
         }
 
+        // Returns junction from road matrix index
+        Junction* get_junction(int index)
+        {
+            return Junction_Matrix[index];
+        }
+
         // Add road between two junctions
-        void add_road(Road* r, bool is_two_way)
+        void add_road(Road* r)
         {
             int s_j_r = -1, e_j_c = -1;
 
@@ -88,10 +98,6 @@ class Map
                 {
                     // Add road to the road matrix (adjacency matrix)
                     Road_Matrix[s_j_r][e_j_c] = r;
-                    if (is_two_way)
-                    {
-                        Road_Matrix[e_j_c][s_j_r] = new Road(r->name, r->distance, r->capacity, r->end_junction, r->start_junction); // Add bidirectional road
-                    }
                 }
             }
         }
@@ -239,101 +245,98 @@ class Map
             }
         }
 
+        void display_road_map_1()
+        {
+            const int cellWidth = 30; // Width of each cell (for proper spacing)
+            const int cellHeight = 3; // Height for each cell to print road info in 3 lines
+        
+            // Helper function to center text in a fixed-width cell
+            auto centerText = [](const string& text, int width) -> string {
+                int padding = width - text.length();
+                if (padding <= 0) return text.substr(0, width); // Truncate if text is too long
+                int leftPadding = padding / 2;
+                int rightPadding = padding - leftPadding;
+                return string(leftPadding, ' ') + text + string(rightPadding, ' ');
+            };
+        
+            // Print the top border
+            cout << "+";
+            for (int j = 0; j < num_of_junctions; ++j)
+            {
+                cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
+            }
+            cout << endl;
+        
+            // For each row of junctions, display road information in the cells
+            for (int i = 0; i < num_of_junctions; ++i)
+            {
+                for (int r = 0; r < cellHeight; ++r)
+                {
+                    for (int j = 0; j < num_of_junctions; ++j)
+                    {
+                        cout << "|"; // Start border of each cell
+                        if (Road_Matrix[i][j] != nullptr)
+                        {
+                            // Print road details inside the cell
+                            if (r == 0)
+                            {
+                                if(Road_Matrix[i][j]->conjestion < 50)
+                                {
+                                    cout << green << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                }
+                                else if(Road_Matrix[i][j]->conjestion < 80)
+                                {
+                                    cout << yellow << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                }
+                                else
+                                {
+                                    cout << red << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                }
+                            }
+                            else if (r == 1)
+                                cout << centerText("Count: " + to_string(Road_Matrix[i][j]->veh_count), cellWidth);
+                            else if (r == 2)
+                                cout << centerText("Distance: " + to_string(Road_Matrix[i][j]->distance), cellWidth);
+                        }
+                        else
+                        {
+                            // Print "Empty" for cells with no road
+                            if (r == 0)
+                                cout << centerText("Empty", cellWidth);
+                            else
+                                cout << string(cellWidth, ' '); // Empty space for remaining lines
+                        }
+                        cout << "|"; // End border of each cell
+                    }
+                    cout << endl;
+                }
+        
+                // Print the bottom border of the row
+                cout << "+";
+                for (int j = 0; j < num_of_junctions; ++j)
+                {
+                    cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
+                }
+                cout << endl;
+        
+                // Print the top border for the next row, except for the last one
+                if (i < num_of_junctions - 1) {
+                    cout << "+";
+                    for (int j = 0; j < num_of_junctions; ++j)
+                    {
+                        cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
+                    }
+                    cout << endl;
+                }
+            }
+        }
+
+
         void display_map()
         {
             cout << endl;
             display_junctions();
             display_road_map();
-        }
-
-
-        // Movement Functions
-
-        // Removal function
-        // Retrieve front car and remove it from queue
-        Vehicle road_cycle_remove(Road* road)
-        {
-            Vehicle front = road->vehicles_on_road.get_front();
-            road->remove_from_road(front);
-            return front;
-        }
-
-        Vehicle junction_cycle_remove(Junction* junction)
-        {
-            Vehicle front = junction->signal_queue.get_front();
-            junction->remove_vehicle(front);
-            return front;
-        }
-
-        // Add function
-        // First check if the structure has space and then add it
-        bool road_cycle_add(Road* road, Vehicle v)
-        {
-            if (road->add_to_road(v))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        bool junction_cycle_add(Junction* junction, Vehicle v)
-        {
-            if (junction->add_vehicle(v))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        bool road_to_junction(Road* road, Junction* junction)
-        {
-            Vehicle v = road_cycle_remove(road);
-            if (junction_cycle_add(junction, v))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        bool junction_to_road(Junction* junction, Road* road)
-        {
-            Vehicle v = junction_cycle_remove(junction);
-            if (road_cycle_add(road, v))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        // Vehicle Movement
-        bool move_vehicle(Junction* junction, Road* road)
-        {
-            if(junction->traffic_light)
-            {
-                if (junction_to_road(junction, road))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return false;
-        }
-
-        bool move_vehicle(Road* road , Junction* junction)
-        {
-            // Move vehicle from road to junction
-            if (road_to_junction(road, junction))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            return false;
         }
 
 

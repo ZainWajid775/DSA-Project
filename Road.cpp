@@ -95,10 +95,26 @@ struct Road
         return false;
     }
 
+    // Check if vehicle is on this road
+    bool exists(Vehicle v)
+    {
+        return vehicles_on_road.exists_in_list(v);
+    }
+
     // Change road status
     void update_status(char r_status)
     {
         status = r_status;
+    }
+
+    bool has_space()
+    {
+        return (veh_count != capacity);
+    }
+
+    float get_conjestion()
+    {
+        return conjestion;
     }
 
     // Debugging function
