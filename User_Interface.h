@@ -7,7 +7,7 @@ string continue_key = "Press the enter key to continue\n";
 
 
 // For windows, use cin.get
-#ifdef WIN_32
+#ifdef _WIN32
 #include <cstdlib>
 // Function to print "enter to continue" and wait for user input
 void enter_to_continue()
@@ -69,5 +69,9 @@ void line(string s)
 
 }
 
+void wait(int timeout)
+{
+    std::this_thread::sleep_for(std::chrono::seconds(timeout));
+}
 
 #endif

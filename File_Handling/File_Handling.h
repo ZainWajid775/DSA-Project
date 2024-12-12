@@ -179,88 +179,99 @@ vector<Map*> read_maps()
         throw runtime_error("Map file cannot be accessed!");
     }
 
-    string line;
-
-    while(getline(file , line))
+    if(file.peek() == EOF)
     {
-
-        Map* map_being_read = new Map(line , 0);
-    
-        // Create seperators for roads and junctions
-        string seperator_j = line + "_junctions";
-        string seperator_r = line + "_roads";
-        getline(file , line);
-        map_being_read->num_of_junctions = stoi(line);
-    
-        string read_line;
-    
-        while(getline(file , read_line))
-        {
-            if(read_line == seperator_j)
-            {
-                break;
-            }
-    
-            string name;
-            int r, c, capacity, timer, traffic_light;
-    
-            stringstream ss(read_line);  
-            getline(ss, name, '|'); 
-            ss >> r;  
-            ss.ignore(1, '|');  
-            ss >> c;  
-            ss.ignore(1, '|');  
-            ss >> capacity;  
-            ss.ignore(1, '|');  
-            ss >> timer;  
-            ss.ignore(1, '|'); 
-            ss >> traffic_light;
-    
-            Junction* junction = new Junction(name , r , c , capacity , timer);
-            junction->traffic_light = traffic_light;
-    
-            map_being_read->add_junction(junction);
-        }
-    
-        map_being_read->road_resize();
-    
-        while(getline(file , read_line))
-        {
-            if(read_line == seperator_r)
-            {
-                break;
-            }
-    
-            string name , start , end , status; 
-            int capacity , vehicles;
-            float distance , conjestion;
-            
-            stringstream ss(read_line);
-            getline(ss, name, '|');  
-            ss >> distance;          
-            ss.ignore(1, '|');       
-            ss >> capacity;         
-            ss.ignore(1, '|');       
-            getline(ss , start , '|'); 
-            getline(ss , end , '|');
-            ss >> vehicles;
-            ss.ignore(1, '|');     
-            ss >> conjestion;        
-            ss.ignore(1, '|');       
-            getline(ss , status , '|');
-        
-            Road* road = new Road(name , distance , capacity , start , end);
-            road->veh_count = vehicles;
-            road->conjestion = conjestion;
-            road->status = status[0];
-    
-            map_being_read->add_road(road);
-    
-        }
-
-        container.push_back(map_being_read);
+        return container;
     }
 
+    try
+    {
+        string line;
+
+        while(getline(file , line))
+        {
+
+            Map* map_being_read = new Map(line , 0);
+
+            // Create seperators for roads and junctions
+            string seperator_j = line + "_junctions";
+            string seperator_r = line + "_roads";
+            getline(file , line);
+            map_being_read->num_of_junctions = stoi(line);
+
+            string read_line;
+
+            while(getline(file , read_line))
+            {
+                if(read_line == seperator_j)
+                {
+                    break;
+                }
+
+                string name;
+                int r, c, capacity, timer, traffic_light;
+
+                stringstream ss(read_line);  
+                getline(ss, name, '|'); 
+                ss >> r;  
+                ss.ignore(1, '|');  
+                ss >> c;  
+                ss.ignore(1, '|');  
+                ss >> capacity;  
+                ss.ignore(1, '|');  
+                ss >> timer;  
+                ss.ignore(1, '|'); 
+                ss >> traffic_light;
+
+                Junction* junction = new Junction(name , r , c , capacity , timer);
+                junction->traffic_light = traffic_light;
+
+                map_being_read->add_junction(junction);
+            }
+
+            map_being_read->road_resize();
+
+            while(getline(file , read_line))
+            {
+                if(read_line == seperator_r)
+                {
+                    break;
+                }
+
+                string name , start , end , status; 
+                int capacity , vehicles;
+                float distance , conjestion;
+
+                stringstream ss(read_line);
+                getline(ss, name, '|');  
+                ss >> distance;          
+                ss.ignore(1, '|');       
+                ss >> capacity;         
+                ss.ignore(1, '|');       
+                getline(ss , start , '|'); 
+                getline(ss , end , '|');
+                ss >> vehicles;
+                ss.ignore(1, '|');     
+                ss >> conjestion;        
+                ss.ignore(1, '|');       
+                getline(ss , status , '|');
+
+                Road* road = new Road(name , distance , capacity , start , end);
+                road->veh_count = vehicles;
+                road->conjestion = conjestion;
+                road->status = status[0];
+
+                map_being_read->add_road(road);
+
+            }
+
+            container.push_back(map_being_read);
+        }
+    }
+    catch(const std::exception& e)
+    {
+        throw std::runtime_error("Error reading maps file!");
+    }
     return container;
 }
 

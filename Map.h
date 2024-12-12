@@ -52,8 +52,65 @@ class Map
             Junction_Matrix.push_back(j);
         }
 
+        // Check if junction exists by name
+        bool has_junction(const string j_name)
+        {
+            for (const auto& junction : Junction_Matrix)
+            {
+                Junction* temp = junction;
+                if (temp->name == j_name) 
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Check if road exists by name
+        bool has_road(const string name)
+        {
+            for (const auto& road_row : Road_Matrix)
+            {
+                for (const auto& road : road_row)
+                {
+                    if (road != nullptr)
+                    {
+                        if(road->name == name)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        //Check if road exists by coordinates
+        bool has_road(int row , int col)
+        {
+            if(Road_Matrix[row][col] == nullptr)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        // Check if there already a junction at the given coordinates
+        bool is_index_clear(int r , int c)
+        {
+            for (const auto& junction : Junction_Matrix)
+            {
+                Junction* temp = junction;
+                if (temp->r == r && temp->c == c) 
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // Check if the junction pair exists
-        bool check_junction_pair(const string& j1, const string& j2)
+        bool check_junction_pair(const string& j1 , const string& j2)
         {
             if (j1 == j2) return false;
 
@@ -101,6 +158,21 @@ class Map
                 }
             }
         }
+
+        // Extract jucntion index
+        int get_index(const string &name)
+        {
+            for(int i = 0 ; i < Junction_Matrix.size() ; i++)
+            {
+                if(Junction_Matrix[i]->name == name)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+
 
 
         void display_junctions() 
