@@ -19,7 +19,7 @@ struct Road
     float conjestion;       // Percentage of road being used
     char status;            // 'b' blocked , 'a' active , 'c' conjestion , 'i' inactive
 
-    // Vector to hold current vehicles on road
+    // to hold current vehicles on road
     List vehicles_on_road;
 
     // Road Constructor
@@ -38,6 +38,29 @@ struct Road
     }
 
     // Vehicle Movement Functions
+
+    void add_vehicle_front(Vehicle v)
+    {
+        vehicles_on_road.insert_front(v);
+
+        // Update Conjestion
+        veh_count++;
+        conjestion = (float)veh_count / capacity * 100;
+
+        if(conjestion > 80)
+        {
+            status = 'c';
+        }
+        else if(conjestion > 100)
+        {
+            status = 'b';
+        }
+        else if(conjestion < 80)
+        {
+            status = 'a';
+        }
+
+    }
 
     bool add_to_road(Vehicle v)
     {   
@@ -95,6 +118,20 @@ struct Road
         return false;
     }
 
+    // Return vehicle from front
+    Vehicle get_vehicle()
+    {
+        Vehicle current_veh = vehicles_on_road.get_front();
+        remove_from_road(current_veh);
+        return current_veh;
+    }
+
+    // Check if road is empty
+    bool empty()
+    {
+        return(veh_count == 0);
+    }
+
     // Check if vehicle is on this road
     bool exists(Vehicle v)
     {
@@ -115,6 +152,13 @@ struct Road
     float get_conjestion()
     {
         return conjestion;
+    }
+
+    void clear()
+    {
+        vehicles_on_road.clear();
+        veh_count = 0;
+        conjestion = 0;
     }
 
     // Debugging function

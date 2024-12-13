@@ -111,6 +111,8 @@ Hash map
 File Handling
 Bubble sort
 Array
+Binary tree 
+Recursion
+Stack
 
 Queue can be used at signals for priority queue
-Recursion can be used in binary trees when showing sorted vehicles via id at signal

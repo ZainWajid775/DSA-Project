@@ -72,9 +72,7 @@ bool store_map(Map* map)
         {
             string line = junction->name + "|" + to_string(junction->r) + "|" + 
                           to_string(junction->c) + "|" + 
-                          to_string(junction->capacity) + "|" + 
-                          to_string(junction->signal_timer) + "|" + 
-                          to_string(junction->traffic_light);
+                          to_string(junction->capacity);
 
             file << line << endl; 
         }
@@ -129,9 +127,7 @@ bool store_map_container(vector<Map*> container)
             {
                 string line = junction->name + "|" + to_string(junction->r) + "|" + 
                               to_string(junction->c) + "|" + 
-                              to_string(junction->capacity) + "|" + 
-                              to_string(junction->signal_timer) + "|" + 
-                              to_string(junction->traffic_light);
+                              to_string(junction->capacity);
 
                 file << line << endl; 
             }
@@ -209,7 +205,7 @@ vector<Map*> read_maps()
                 }
 
                 string name;
-                int r, c, capacity, timer, traffic_light;
+                int r, c, capacity;
 
                 stringstream ss(read_line);  
                 getline(ss, name, '|'); 
@@ -218,13 +214,8 @@ vector<Map*> read_maps()
                 ss >> c;  
                 ss.ignore(1, '|');  
                 ss >> capacity;  
-                ss.ignore(1, '|');  
-                ss >> timer;  
-                ss.ignore(1, '|'); 
-                ss >> traffic_light;
 
-                Junction* junction = new Junction(name , r , c , capacity , timer);
-                junction->traffic_light = traffic_light;
+                Junction* junction = new Junction(name , r , c , capacity);
 
                 map_being_read->add_junction(junction);
             }

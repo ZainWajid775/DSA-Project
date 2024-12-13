@@ -52,6 +52,19 @@ class Map
             Junction_Matrix.push_back(j);
         }
 
+        // Return maximum number of vehicles junctions can hold
+        int max_vehicles()
+        {
+            int max = 0;
+
+            for(auto& junction : Junction_Matrix)
+            {
+                max += junction->capacity;
+            }
+
+            return max;
+        }
+
         // Check if junction exists by name
         bool has_junction(const string j_name)
         {
@@ -122,6 +135,27 @@ class Map
                 if (temp->name == j2) j2_e = true;
             }
             return j1_e && j2_e;
+        }
+
+        // Check if junction has connected roads
+        bool has_road_connection(Junction* junction)
+        {
+            for(int i = 0 ; i < Junction_Matrix.size() ; i++)
+            {
+                if(junction->name == Junction_Matrix[i]->name)
+                {
+                    for(int j = 0 ; j < Junction_Matrix.size() ; j++)
+                    {
+                        Road *temp = Road_Matrix[i][j];
+                        if(temp != nullptr)
+                        {
+                            return true;
+                        }
+                    }
+                }                    
+            }
+
+            return false;
         }
 
         // Returns junction from road matrix index
@@ -233,10 +267,21 @@ class Map
                                         }
                                     }
 
-                                    // Assign color based on traffic light state if connected
+                                    // Assign color based on traffic count
                                     if (has_connected_road) 
                                     {
-                                        color_code = temp->traffic_light ? "\033[32m" : "\033[31m"; 
+                                        if(temp->conjestion < 50)
+                                        {
+                                            color_code = "\033[32m";
+                                        }
+                                        else if(temp->conjestion < 80)
+                                        {
+                                            color_code = "\033[33m";
+                                        } 
+                                        else
+                                        {
+                                            color_code = "\033[31m";
+                                        } 
                                     }
                                 } 
                                 

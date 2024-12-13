@@ -17,18 +17,17 @@ struct Junction
     int r , c;                  // Coordinates in 2D plane
     int capacity;               // Maximum number of vehicles that can be stored
     int current_veh_count;      // Number of vehicles currently at junction
-    int signal_timer;           // Signal timer for traffic light
-    bool traffic_light;         // Traffic Light functionality
+    float conjestion;           // Percentage of junction being used
 
     // Junction Constructor
-    Junction(string j_name , int j_r , int j_c , int j_capacity , int j_timer)
+    Junction(string j_name , int j_r , int j_c , int j_capacity)
     {
         name = j_name;
         r = j_r;
         c = j_c;
         capacity = j_capacity;
         current_veh_count = 0;
-        signal_timer = j_timer;
+        conjestion = 0;
     }
 
     string get_veh_count()
@@ -39,11 +38,33 @@ struct Junction
     // Signal Functionality
     List signal_queue;   // Stores vehicles currently at signal
 
+    // Get vehicle from the front
+    Vehicle get_vehicle()
+    {
+        Vehicle current_veh = signal_queue.get_front();
+        remove_vehicle(current_veh);
+        return current_veh;
+    }
+
     // Checks and adds vehicle to the queue if there is space
     void add_vehicle(Vehicle v)       
     {
         signal_queue.insert(v);
         current_veh_count++;
+
+        // Update Conjestion
+        conjestion = (float)current_veh_count / capacity * 100;        
+    }
+
+    // Adds a vehicle to front
+    void add_vehicle_front(Vehicle v)
+    {
+        signal_queue.insert_front(v);
+        current_veh_count++;
+
+        // Update Conjestion
+        conjestion = (float)current_veh_count / capacity * 100;
+
     }
 
     // Checks if the vehicle is in list and removes it 
@@ -54,17 +75,26 @@ struct Junction
         {
             signal_queue.remove(vehicle);
             current_veh_count--;
+
+            // Update Conjestion
+            conjestion = (float)current_veh_count / capacity * 100;
+            
             return true;
         }
         return false;
     }
 
+    // Check if the vehicle is in the junction
     bool has_vehicle(const Vehicle& vehicle)
     {
         return signal_queue.exists_in_list(vehicle);
     }
 
-
+    // Check if junction is empty
+    bool is_empty()
+    {
+        return signal_queue.is_empty();
+    }
 
     // Check if junction has space
     bool has_space()
@@ -72,15 +102,14 @@ struct Junction
         return (current_veh_count != capacity);
     }
 
-    int get_signal_timer()
-    {   
-        return signal_timer;
-    }
-    
-    void change_traffic_light()
+    // Clear the junction queue
+    void clear()
     {
-        traffic_light = !traffic_light;
+        signal_queue.clear();
+        current_veh_count = 0;
+        conjestion = 0;
     }
+
 
 };
 

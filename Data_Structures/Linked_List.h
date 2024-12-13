@@ -30,6 +30,14 @@ class List
             return head; 
         }
 
+        void insert_front(Vehicle v)
+        {
+            Node* node  = new Node(v);
+
+            node->next = head;
+            head = node;
+        }
+
         void insert(Vehicle v)
         {
             Node* node = new Node(v);
@@ -56,7 +64,8 @@ class List
 
         Vehicle get_front()
         {
-            return head->vehicle;
+            Vehicle temp = head->vehicle;
+            return temp;
         }
 
         int size()
@@ -157,6 +166,15 @@ class List
             }
 
             return false;
+        }
+
+        void clear()
+        {
+            while(!is_empty())
+            {
+                Vehicle v = get_front();
+                remove(v);
+            }
         }
 
         ~List()

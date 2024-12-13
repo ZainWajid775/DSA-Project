@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-void move_vehicle_road_to_junction(Map& map , Vehicle* vehicle)
+bool move_vehicle_road_to_junction(Map& map , Vehicle* vehicle)
 {
     // Get vehicles current position
     int column = vehicle->current_node;
@@ -29,124 +29,100 @@ void move_vehicle_road_to_junction(Map& map , Vehicle* vehicle)
     }
     
 
-    // Check if the vehicle has any remaining moves
-    if(!(vehicle->movement_counter == 0))
+
+    // Check if the vehicle can move to junction
+    // Column index of the current road corresponds to the junction
+    // 1. Get junction data
+    Junction *temp = map.get_junction(column);
+
+    // 2. Check if junction has space
+    if(temp->has_space())
     {
-        // Check if the vehicle can move to junction
-        // Column index of the current road corresponds to the junction
-
-        // 1. Get junction data
-        Junction *temp = map.get_junction(column);
-
-        // 2. Check if junction has space
-        if(temp->has_space())
-        {
-            // 3. Update vehicle
-            vehicle->current_node = column;
-            vehicle->movement_counter--;
-
-            // 4. Move vehicle to junction
-            temp->add_vehicle(*vehicle);
-
-        }
-    
+        // 3. Update vehicle
+        vehicle->current_node = column;
+        // 4. Move vehicle to junction
+        temp->add_vehicle(*vehicle);
+        return true;
     }
 
-
-    // Remove vehicle from its old road
-    map.Road_Matrix[row][column]->remove_from_road(*vehicle);
-    return;
+    return false;
 }
 
-void move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
+bool move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
 {
     // Get vehicles current position
     // Row index of Junction in road matrix shows next possible moves
     int row = vehicle->current_node;
 
-    // Check if vehicle has any remaining moves
-    if((vehicle->movement_counter != 0))
+    // Iterate over all column of road matrix to get connected roads
+    // Roads are pushed into an array
+    // If a road is full , it is not pushed into the queue
+
+    // 1. Push in possible connections
+
+    vector<Road*> road_arr;
+    for(int i = 0 ; i < map.num_of_junctions ; i++)
+    {   
+        Road *temp = map.Road_Matrix[row][i];
+        if(temp != nullptr)
+        {
+            if(temp->has_space())
+            {
+                road_arr.push_back(temp);
+            }
+        }
+    }
+
+    // Incase of no possible moves
+    if(road_arr.size() != 0)
     {
-        // Check if the vehicle can move to road
+        // 2. Sort road_arr according to road priority
+        // Priority based on road availability
+        int size = road_arr.size();
+        for(int i = 0 ; i < size - 1 ; i++)
+        {
+            for(int j = 0 ; j < size - i - 1 ; j++)
+            {
+                // Ascending order
+                float con_1 , con_2;
+                con_1 = road_arr[j]->get_conjestion();
+                con_2 = road_arr[j+1]->get_conjestion();
 
-        // Iterate over all column of road matrix to get connected roads
-        // Roads are pushed into an array
-        // If a road is full , it is not pushed into the queue
+                if(con_1 > con_2)
+                {
+                    Road *temp = road_arr[j];
+                    road_arr[j] = road_arr[j+1];
+                    road_arr[j+1] = temp;
+                }
+            }
+        }
 
-        // 1. Push in possible connections
-        vector<Road*> road_arr;
-        for(int i = 0 ; i < map.num_of_junctions ; i++)
-        {   
+        // 3. Move to road
+        // Extract column index of road to update current position
+        string selected_name = road_arr[0]->name;
+        for (int i = 0 ; i < map.Road_Matrix[row].size() ; i++)
+        {
             Road *temp = map.Road_Matrix[row][i];
+
             if(temp != nullptr)
             {
-                if(temp->has_space())
-                {
-                    road_arr.push_back(temp);
+                string name = temp->name;
+                if(name == selected_name)
+                {   
+                    vehicle->current_node = i;
+                    break;
                 }
             }
         }
-        // Incase of no possible moves
 
-        if(road_arr.size() != 0)
-        {
-            // 2. Sort road_arr according to road priority
-            // Priority based on road availability
-            int size = road_arr.size();
-            for(int i = 0 ; i < size - 1 ; i++)
-            {
-                for(int j = 0 ; j < size - i - 1 ; j++)
-                {
-                    // Ascending order
-                    float con_1 , con_2;
-                    con_1 = road_arr[j]->get_conjestion();
-                    con_2 = road_arr[j+1]->get_conjestion();
+        road_arr[0]->add_to_road(*vehicle);
+        return true;
+    }
 
-                    if(con_1 > con_2)
-                    {
-                        Road *temp = road_arr[j];
-                        road_arr[j] = road_arr[j+1];
-                        road_arr[j+1] = temp;
-                    }
-                }
-            }
-
-            // 3. Move to road
-            // Extract column index of road to update current position
-
-            string selected_name = road_arr[0]->name;
-            for (int i = 0 ; i < map.Road_Matrix[row].size() ; i++)
-            {
-                Road *temp = map.Road_Matrix[row][i];
-                if(temp != nullptr)
-                {
-                    string name = temp->name;
-                    if(name == selected_name)
-                    {   
-                        vehicle->current_node = i;
-                        break;
-                    }
-                }
-            }
-
-            road_arr[0]->add_to_road(*vehicle);
-            vehicle->movement_counter--;
-            
-        }
         
-    }
 
-    // Delete the vehicle
-    // Get junction first
-    for(int i = 0 ; i < map.num_of_junctions ; i++)
-    {
-        if(map.Junction_Matrix[i]->has_vehicle(*vehicle))
-        {
-            map.Junction_Matrix[i]->remove_vehicle(*vehicle);
-            break;
-        }
-    }
 
+    return false;
 }
 
 
