@@ -57,6 +57,7 @@ struct Junction
     }
 
     // Adds a vehicle to front
+    // Used in simulation 
     void add_vehicle_front(Vehicle v)
     {
         signal_queue.insert_front(v);

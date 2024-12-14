@@ -69,6 +69,7 @@ void line(string s)
 
 }
 
+// Pauses program for specified time interval
 void wait(int timeout)
 {
     std::this_thread::sleep_for(std::chrono::seconds(timeout));

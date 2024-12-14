@@ -118,10 +118,7 @@ bool move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
         road_arr[0]->add_to_road(*vehicle);
         return true;
     }
-
-        
-
-
+    
     return false;
 }
 

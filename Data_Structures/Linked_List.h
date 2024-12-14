@@ -5,9 +5,6 @@
 #include "../Vehicle.h"
 using namespace std;
 
-// DELETION DOESNT CHECK IF VEHICLE EXISTS IN LINKED LIST
-// USE EXISTS FUCNTION FIRST
-
 struct Node
 {
     Vehicle vehicle;
@@ -23,6 +20,7 @@ class List
 
     public:
 
+        // Constructer
         List() : head(nullptr) {}
 
         Node* get_head() const 
@@ -30,6 +28,7 @@ class List
             return head; 
         }
 
+        //Insert at front
         void insert_front(Vehicle v)
         {
             Node* node  = new Node(v);
@@ -38,6 +37,7 @@ class List
             head = node;
         }
 
+        // Insert at end
         void insert(Vehicle v)
         {
             Node* node = new Node(v);
@@ -62,6 +62,7 @@ class List
             return head == nullptr;
         }
 
+        // Get vehicle in front of list
         Vehicle get_front()
         {
             Vehicle temp = head->vehicle;
@@ -82,6 +83,7 @@ class List
             return count;
         }
 
+        // Remove vehicle if it exists
         void remove(Vehicle v)
         {
             if(head->vehicle.id == v.id)
@@ -106,7 +108,7 @@ class List
 
         }
 
-        // EXIST FUNCTION WORKS WITH VEHICLE IDS ONLY
+        // Checks the vehicle id
         bool exists(const Vehicle& v) const
         {
             Node* temp = head;
@@ -134,6 +136,7 @@ class List
             }
         }
 
+        // For sorting using bubble sort
         int* duplicate_list()
         {
             int count = size();
@@ -168,6 +171,7 @@ class List
             return false;
         }
 
+        // Removes all vehicles
         void clear()
         {
             while(!is_empty())
@@ -177,6 +181,7 @@ class List
             }
         }
 
+        // Destructor
         ~List()
         {
             while(head != nullptr)

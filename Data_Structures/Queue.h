@@ -83,6 +83,7 @@ class Circular_Queue
             return size == capacity;
         }
 
+        // Uses merge sort for priority queue 
         void sort()
         {
             int temp[size];
@@ -110,7 +111,10 @@ private:
         {
             int mid = left + (right - left) / 2;
 
+            // Sort left side
             merge_sort(arr, left, mid);
+
+            // Sort right side
             merge_sort(arr, mid + 1, right);
 
             merge(arr, left, mid, right);
@@ -119,12 +123,15 @@ private:
 
     void merge(int arr[] , int left , int mid , int right)
     {
+        // Get size of temporary arrays
         int n1 = mid - left + 1;
         int n2 = right - mid;
 
+        // Create temporary arrays
         int *L = new int[n1];
         int *R = new int[n2];
 
+        // Copy arrays
         for (int i = 0; i < n1; i++)
         {
             L[i] = arr[left + i];
@@ -134,6 +141,7 @@ private:
             R[i] = arr[mid + 1 + i];
         }
 
+        // Sort the arrays
         int i = 0 , j = 0 , k = left;
         while (i < n1 && j < n2)
         {
@@ -150,6 +158,7 @@ private:
             k++;
         }
 
+        // Copy over any leftover elements
         while (i < n1)
         {
             arr[k] = L[i];
@@ -164,6 +173,7 @@ private:
             k++;
         }
 
+        // Delete temporary arrays
         delete[] L;
         delete[] R;
     }

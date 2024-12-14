@@ -22,6 +22,7 @@ class Vector
             data = new T[capacity];
         }
 
+        // Used to implement vectors ability to resize itself without any user input
         void resize(size_t new_size)
         {
             if(new_size > capacity)
@@ -41,6 +42,7 @@ class Vector
             size = new_size;
         }
 
+        // Handles resizing og nested vector (Road_Matrix)
         void resize(size_t outer_size , size_t inner_size = 0)
         {
             resize(outer_size);

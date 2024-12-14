@@ -211,105 +211,159 @@ class Map
 
         void display_junctions() 
         {
-            // Rows and columns to display in 2d space
-            const int max_rows = num_of_junctions;
-            const int max_cols = num_of_junctions;
-            const int cell_width = 12;
-
-            // Print top border
-            cout << "+" << string((cell_width + 1) * max_cols, '-') << "+\n";
-            
-            // Nested for for 2d 
-            // Second for to print the 3 line cell
-            for (int row = 0; row < max_rows; row++) 
+            if(num_of_junctions < 10)
             {
-                for (int line = 0; line < 3; line++) 
+                // Rows and columns to display in 2d space
+                const int max_rows = num_of_junctions;
+                const int max_cols = num_of_junctions;
+                const int cell_width = 12;
+
+                // Print top border
+                cout << "+" << string((cell_width + 1) * max_cols, '-') << "+\n";
+
+                // Nested for for 2d 
+                // Second for to print the 3 line cell
+                for (int row = 0; row < max_rows; row++) 
                 {
-                    cout << "|";
-
-                    for (int col = 0; col < max_cols; col++) 
+                    for (int line = 0; line < 3; line++) 
                     {
-                        string cell_content = "";      // Default blank content
-                        string color_code = "\033[0m"; // Default color (reset)
+                        cout << "|";
 
-                        bool junction_exists = false;
+                        for (int col = 0; col < max_cols; col++) 
+                        {
+                            string cell_content = "";      // Default blank content
+                            string color_code = "\033[0m"; // Default color (reset)
 
-                        // Find the junction at the current coordinate
-                        for (auto& temp : Junction_Matrix) {
-                            if (temp->r == row && temp->c == col) 
-                            {
+                            bool junction_exists = false;
 
-                                junction_exists = true;
+                            // Find the junction at the current coordinate
+                            for (auto& temp : Junction_Matrix) {
+                                if (temp->r == row && temp->c == col) 
+                                {
 
-                                if (line == 1) // Middle line for junction name
-                                { 
-                                    cell_content = temp->name;
+                                    junction_exists = true;
 
-                                    // Check if the junction has any connected roads
-                                    bool has_connected_road = false;
+                                    if (line == 1) // Middle line for junction name
+                                    { 
+                                        cell_content = temp->name;
+
+                                        // Check if the junction has any connected roads
+                                        bool has_connected_road = false;
 
 
-                                    // Iterate Road Matrix and if the roads start or end junction name matches, a road exists connected to junction
-                                    for (const auto& road_row : Road_Matrix) 
-                                    {
-                                        for (const auto& road : road_row) 
+                                        // Iterate Road Matrix and if the roads start or end junction name matches, a road exists connected to junction
+                                        for (const auto& road_row : Road_Matrix) 
                                         {
-                                            if (road != nullptr && (road->start_junction == temp->name || road->end_junction == temp->name)) 
+                                            for (const auto& road : road_row) 
                                             {
-                                                has_connected_road = true;
+                                                if (road != nullptr && (road->start_junction == temp->name || road->end_junction == temp->name)) 
+                                                {
+                                                    has_connected_road = true;
+                                                    break;
+                                                }
+                                            }
+                                            // Once a road is found , exit loop
+                                            if (has_connected_road) 
+                                            {
                                                 break;
                                             }
                                         }
-                                        // Once a road is found , exit loop
+
+                                        // Assign color based on traffic count
                                         if (has_connected_road) 
                                         {
-                                            break;
+                                            if(temp->conjestion < 50)
+                                            {
+                                                color_code = "\033[32m";
+                                            }
+                                            else if(temp->conjestion < 80)
+                                            {
+                                                color_code = "\033[33m";
+                                            } 
+                                            else
+                                            {
+                                                color_code = "\033[31m";
+                                            } 
                                         }
-                                    }
+                                    } 
 
-                                    // Assign color based on traffic count
-                                    if (has_connected_road) 
-                                    {
-                                        if(temp->conjestion < 50)
-                                        {
-                                            color_code = "\033[32m";
-                                        }
-                                        else if(temp->conjestion < 80)
-                                        {
-                                            color_code = "\033[33m";
-                                        } 
-                                        else
-                                        {
-                                            color_code = "\033[31m";
-                                        } 
+                                    // Line for vehicle count
+                                    else if (line == 2) 
+                                    { 
+                                        cell_content = "Veh: " + temp->get_veh_count();
                                     }
-                                } 
-                                
-                                // Line for vehicle count
-                                else if (line == 2) 
-                                { 
-                                    cell_content = "Veh: " + temp->get_veh_count();
+                                    break;
+                                }
+                            }
+
+                            // If no junction exists, display "Empty" in the middle line
+                            if (!junction_exists && line == 1) 
+                            {
+                                cell_content = "Empty";
+                            }
+
+                            // Format and print cell content
+                            int padding = (cell_width - cell_content.size()) / 2;
+                            cout << string(padding, ' ') << color_code << cell_content
+                                 << "\033[0m" // Reset color after content
+                                 << string(cell_width - padding - cell_content.size(), ' ') << "|";
+                        }
+                        cout << "\n";
+                    }
+                    // Print row separator
+                    cout << "+" << string((cell_width + 1) * max_cols, '-') << "+\n";
+                }
+            }
+            else
+            {
+                // Rows and columns to display junctions in a simple 2D array
+                const int max_rows = num_of_junctions;
+                const int max_cols = num_of_junctions;
+
+                // Nested loop for 2D grid visualization
+                for (int row = 0; row < max_rows; ++row)
+                {
+                    for (int col = 0; col < max_cols; ++col)
+                    {
+                        string junction_name = "";
+                        string color_code = "\033[0m"; // Default color reset
+
+                        // Check if a junction exists at the current grid cell
+                        for (const auto &junction : Junction_Matrix)
+                        {
+                            if (junction->r == row && junction->c == col)
+                            {
+                                junction_name = junction->name;
+
+                                // Assign color based on congestion level
+                                if (junction->conjestion < 50)
+                                {
+                                    color_code = "\033[32m"; // Green
+                                }
+                                else if (junction->conjestion < 80)
+                                {
+                                    color_code = "\033[33m"; // Yellow
+                                }
+                                else
+                                {
+                                    color_code = "\033[31m"; // Red
                                 }
                                 break;
                             }
                         }
 
-                        // If no junction exists, display "Empty" in the middle line
-                        if (!junction_exists && line == 1) 
+                        // Print junction name or "Empty" if no junction exists
+                        if (!junction_name.empty())
                         {
-                            cell_content = "Empty";
+                            cout << color_code << setw(10) << left << junction_name << "\033[0m"; // Reset color
                         }
-
-                        // Format and print cell content
-                        int padding = (cell_width - cell_content.size()) / 2;
-                        cout << string(padding, ' ') << color_code << cell_content
-                             << "\033[0m" // Reset color after content
-                             << string(cell_width - padding - cell_content.size(), ' ') << "|";
+                        else
+                        {
+                            cout << setw(10) << left << "Empty";
+                        }
                     }
-                    cout << "\n";
+                    cout << endl; // Newline after each row
                 }
-                // Print row separator
-                cout << "+" << string((cell_width + 1) * max_cols, '-') << "+\n";
             }
         }
 
@@ -323,26 +377,42 @@ class Map
             cout << "Start Junction\tEnd Junction\tRoad Name\tDirection\n";
 
             // Iterate through all roads
-            for (size_t i = 0; i < Road_Matrix.size(); i++)
+            for (size_t i = 0 ; i < Road_Matrix.size() ; i++)
             {
-                for (size_t j = 0; j < Road_Matrix[i].size(); j++)
+                for (size_t j = 0 ; j < Road_Matrix[i].size() ; j++)
                 {
                     Road* road = Road_Matrix[i][j];
                     if (road != nullptr)
                     {
                         Road* temp = road;
+                        string color_code;
+
+                        // Color code according to conjestion
+                        if(temp->conjestion < 50)
+                        {
+                            color_code = "\033[32m";
+                        }
+                        else if(temp->conjestion < 80)
+                        {
+                            color_code = "\033[33m";
+                        } 
+                        else
+                        {
+                            color_code = "\033[31m";
+                        } 
+
                         if (Road_Matrix[j][i] == nullptr)
                         {
                             // One-way road
                             Junction * temp_1 = Junction_Matrix[i];
                             Junction * temp_2 = Junction_Matrix[j];
 
-                            cout << setw(18) << left << temp_1->name
+                            cout << color_code << setw(18) << left << temp_1->name
                                  << setw(18) << left << temp_2->name
                                  << setw(18) << left << road->name
                                  << setw(8) << left << "→"
                                  << setw(12) << right << "Conjestion : " << road->conjestion
-                                 << setw(12) << right << "Status : " << road->status << endl;
+                                 << setw(12) << right << "Status : " << road->status << reset << endl;
                         }
                         else
                         {
@@ -350,100 +420,104 @@ class Map
                             Junction * temp_1 = Junction_Matrix[i];
                             Junction * temp_2 = Junction_Matrix[j];
 
-                            cout << setw(18) << left << temp_1->name
+                            cout << color_code << setw(18) << left << temp_1->name
                                  << setw(18) << left << temp_2->name
                                  << setw(18) << left << road->name
                                  << setw(8) << left << "↔"
                                  << setw(12) << right << "Conjestion : " << road->conjestion
-                                 << setw(12) << right << "Status : " << road->status << endl;
+                                 << setw(12) << right << "Status : " << road->status << reset << endl;
                        }
                     }
                 }
             }
         }
 
+        // Display in 2d plane
         void display_road_map_1()
         {
-            const int cellWidth = 30; // Width of each cell (for proper spacing)
-            const int cellHeight = 3; // Height for each cell to print road info in 3 lines
-        
-            // Helper function to center text in a fixed-width cell
-            auto centerText = [](const string& text, int width) -> string {
-                int padding = width - text.length();
-                if (padding <= 0) return text.substr(0, width); // Truncate if text is too long
-                int leftPadding = padding / 2;
-                int rightPadding = padding - leftPadding;
-                return string(leftPadding, ' ') + text + string(rightPadding, ' ');
-            };
-        
-            // Print the top border
-            cout << "+";
-            for (int j = 0; j < num_of_junctions; ++j)
+            if(num_of_junctions < 7)
             {
-                cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
-            }
-            cout << endl;
-        
-            // For each row of junctions, display road information in the cells
-            for (int i = 0; i < num_of_junctions; ++i)
-            {
-                for (int r = 0; r < cellHeight; ++r)
-                {
-                    for (int j = 0; j < num_of_junctions; ++j)
-                    {
-                        cout << "|"; // Start border of each cell
-                        if (Road_Matrix[i][j] != nullptr)
-                        {
-                            // Print road details inside the cell
-                            if (r == 0)
-                            {
-                                if(Road_Matrix[i][j]->conjestion < 50)
-                                {
-                                    cout << green << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
-                                }
-                                else if(Road_Matrix[i][j]->conjestion < 80)
-                                {
-                                    cout << yellow << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
-                                }
-                                else
-                                {
-                                    cout << red << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
-                                }
-                            }
-                            else if (r == 1)
-                                cout << centerText("Count: " + to_string(Road_Matrix[i][j]->veh_count), cellWidth);
-                            else if (r == 2)
-                                cout << centerText("Distance: " + to_string(Road_Matrix[i][j]->distance), cellWidth);
-                        }
-                        else
-                        {
-                            // Print "Empty" for cells with no road
-                            if (r == 0)
-                                cout << centerText("Empty", cellWidth);
-                            else
-                                cout << string(cellWidth, ' '); // Empty space for remaining lines
-                        }
-                        cout << "|"; // End border of each cell
-                    }
-                    cout << endl;
-                }
-        
-                // Print the bottom border of the row
+                const int cellWidth = 30; // Width of each cell (for proper spacing)
+                const int cellHeight = 3; // Height for each cell to print road info in 3 lines
+
+                // Helper function to center text in a fixed-width cell
+                auto centerText = [](const string& text, int width) -> string {
+                    int padding = width - text.length();
+                    if (padding <= 0) return text.substr(0, width); // Truncate if text is too long
+                    int leftPadding = padding / 2;
+                    int rightPadding = padding - leftPadding;
+                    return string(leftPadding, ' ') + text + string(rightPadding, ' ');
+                };
+
+                // Print the top border
                 cout << "+";
                 for (int j = 0; j < num_of_junctions; ++j)
                 {
                     cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
                 }
                 cout << endl;
-        
-                // Print the top border for the next row, except for the last one
-                if (i < num_of_junctions - 1) {
+
+                // For each row of junctions, display road information in the cells
+                for (int i = 0; i < num_of_junctions; ++i)
+                {
+                    for (int r = 0; r < cellHeight; ++r)
+                    {
+                        for (int j = 0; j < num_of_junctions; ++j)
+                        {
+                            cout << "|"; // Start border of each cell
+                            if (Road_Matrix[i][j] != nullptr)
+                            {
+                                // Print road details inside the cell
+                                if (r == 0)
+                                {
+                                    if(Road_Matrix[i][j]->conjestion < 50)
+                                    {
+                                        cout << green << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                    }
+                                    else if(Road_Matrix[i][j]->conjestion < 80)
+                                    {
+                                        cout << yellow << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                    }
+                                    else
+                                    {
+                                        cout << red << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                    }
+                                }
+                                else if (r == 1)
+                                    cout << centerText("Count: " + to_string(Road_Matrix[i][j]->veh_count), cellWidth);
+                                else if (r == 2)
+                                    cout << centerText("Distance: " + to_string(Road_Matrix[i][j]->distance), cellWidth);
+                            }
+                            else
+                            {
+                                // Print "Empty" for cells with no road
+                                if (r == 0)
+                                    cout << centerText("Empty", cellWidth);
+                                else
+                                    cout << string(cellWidth, ' '); // Empty space for remaining lines
+                            }
+                            cout << "|"; // End border of each cell
+                        }
+                        cout << endl;
+                    }
+
+                    // Print the bottom border of the row
                     cout << "+";
                     for (int j = 0; j < num_of_junctions; ++j)
                     {
                         cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
                     }
                     cout << endl;
+
+                    // Print the top border for the next row, except for the last one
+                    if (i < num_of_junctions - 1) {
+                        cout << "+";
+                        for (int j = 0; j < num_of_junctions; ++j)
+                        {
+                            cout << setw(cellWidth) << setfill('-') << "" << setfill(' ') << "+";
+                        }
+                        cout << endl;
+                    }
                 }
             }
         }

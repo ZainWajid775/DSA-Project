@@ -11,6 +11,8 @@
 
 using namespace std;
 
+// Store all users in container
+// username|password
 void store_credentials(vector<string> credentials)
 {
     ofstream file("File_Handling/Accounts.txt");
@@ -28,6 +30,7 @@ void store_credentials(vector<string> credentials)
     file.close();
 }
 
+// Read entries in credentials file and return in string vector
 vector<string> read_credentials()
 {
     ifstream file("File_Handling/Accounts.txt");
@@ -48,62 +51,7 @@ vector<string> read_credentials()
     return credentials; 
 }
 
-
-bool store_map(Map* map)
-{
-    string save_filename = "File_Handling/Maps.txt";
-
-    ofstream file(save_filename);
-
-    if(!file.is_open())
-    {
-        throw runtime_error("Map file cannot be accessed!");
-    }
-    
-    file << map->map_name << endl;
-    file << map->num_of_junctions << endl;
-
-    // Store Junction with all information in one line
-    for (size_t i = 0; i < map->Junction_Matrix.size(); i++)
-    {
-        Junction* junction = map->Junction_Matrix[i];
-
-        if (junction != nullptr)
-        {
-            string line = junction->name + "|" + to_string(junction->r) + "|" + 
-                          to_string(junction->c) + "|" + 
-                          to_string(junction->capacity);
-
-            file << line << endl; 
-        }
-    }
-
-    file << map->map_name + "_" + "junctions" << endl;
-
-    for(size_t i = 0; i < map->Road_Matrix.size(); i++)
-    {
-        for(size_t j = 0; j < map->Road_Matrix[i].size(); j++)
-        {
-            Road* road = map->Road_Matrix[i][j];
-            if(road != nullptr)
-            {
-                string line = road->name + "|" + to_string(road->distance) + "|" + 
-                              to_string(road->capacity) + "|" + road->start_junction + "|" + 
-                              road->end_junction + "|" + to_string(road->veh_count) + "|" + 
-                              to_string(road->conjestion) + "|" + road->status;
-
-                file << line << endl;
-            }
-        }
-    }
-
-    file << map->map_name + "_" + "roads" << endl << endl;
-
-    file.close();
-    return true;
-
-}
-
+// for all maps in container
 bool store_map_container(vector<Map*> container)
 {
     ofstream file("File_Handling/Maps.txt");
@@ -161,7 +109,7 @@ bool store_map_container(vector<Map*> container)
 
 
 
-
+// Reads entire map file and returns the created maps as a vector of pointers
 vector<Map*> read_maps() 
 {
     vector<Map*> container;

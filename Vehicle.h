@@ -1,7 +1,6 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 
-#include <iostream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
@@ -14,7 +13,7 @@ struct Vehicle
     // Vehicle characteristics
     int id;                 // Unique ID for vehicle
     string type;            // Type of vehicle
-    int current_node;
+    int current_node;       // Stores column index of current node
   
     // Static storage for generated vehicles (to ensure unique IDs)
     static unordered_map<int , Vehicle*> generated_vehicle_ids;
@@ -33,7 +32,6 @@ struct Vehicle
 
         generated_vehicle_ids[id] = this;
 
-        
     }
 
     // Destructor
@@ -42,6 +40,7 @@ struct Vehicle
         generated_vehicle_ids.erase(id);
     }
 
+    // Overloaded operator to compare ids
     bool operator == (const Vehicle& other) const
     {
         return id == other.id;

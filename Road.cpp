@@ -39,6 +39,8 @@ struct Road
 
     // Vehicle Movement Functions
 
+    // Adds the vehicle to the front of the vehicle list
+    // Used when map is being simulated in main
     void add_vehicle_front(Vehicle v)
     {
         vehicles_on_road.insert_front(v);
@@ -62,6 +64,7 @@ struct Road
 
     }
 
+    // Add vehicle to road
     bool add_to_road(Vehicle v)
     {   
         // Dont add to road if it is disabled, blocked or at max capacity
@@ -93,6 +96,7 @@ struct Road
         }
     }
 
+    // Remove vehicle from road if it is on the road
     bool remove_from_road(Vehicle v)
     {
         if(vehicles_on_road.exists(v))
@@ -144,16 +148,19 @@ struct Road
         status = r_status;
     }
 
+    // Check if vehicle has space
     bool has_space()
     {
         return (veh_count != capacity);
     }
 
+    // Returns conjestion value
     float get_conjestion()
     {
         return conjestion;
     }
 
+    // Clears the entire road 
     void clear()
     {
         vehicles_on_road.clear();
