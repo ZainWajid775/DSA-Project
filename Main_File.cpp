@@ -279,7 +279,7 @@ int main(int argc , char* argv[])
                         cout << YELLOW << "Select a map to view by name" << RESET << '\n';
                         cout << endl;
     
-                        for(int i = 0; i < map_container.size(); i++)
+                        for(int i = 0 ; i < map_container.size() ; i++)
                         {
                             cout << GREEN << i + 1 << ". " << map_container[i]->map_name << '\n';
                         }
@@ -864,7 +864,7 @@ int main(int argc , char* argv[])
                 {   
                     bool map_chosen = false;
                     string user_chosen_map;
-                    Map* simulate_map;
+                    Map* simulate_map = nullptr;
     
                     while(!map_chosen)
                     {
@@ -878,6 +878,7 @@ int main(int argc , char* argv[])
                         for(auto& map : map_container)
                         {
                             cout << BLUE << index << ". " << map->map_name << endl;
+                            index++;
                         }
     
                         cout << endl;
@@ -890,7 +891,7 @@ int main(int argc , char* argv[])
                         {
                             cout << GREEN << "Exiting to main menu..." << RESET << endl;
                             wait(1);
-                            map_chosen = true;
+                            break;
                         }
     
                         for(auto& map : map_container)
@@ -1666,11 +1667,26 @@ int main(int argc , char* argv[])
     {
         std::cerr << RED "ERROR : " << e.what() << RESET << endl;
         cout << RED << "An unknown error occured."  << endl;
-        cout <<  "Please verify the save files and restart the system." << RESET << endl;
+        
+        // Restart the program
+        cout << RED << "Restarting program..." << RESET << endl;
+        wait(1);
+
+        if (execl(program_name, program_name, (char*)NULL) == -1) {
+            std::cerr << RED "ERROR: Failed to restart program: " << strerror(errno) << RESET << endl;
+        }
     }
     catch(...)
     {
         cout << RED << "An unknown error occured."  << endl;
         cout <<  "Please verify the save files and restart the system." << RESET << endl;
+
+        // Restart the program
+        cout << RED << "Restarting program..." << RESET << endl;
+        wait(1);
+
+        if (execl(program_name, program_name, (char*)NULL) == -1) {
+            std::cerr << RED "ERROR: Failed to restart program: " << strerror(errno) << RESET << endl;
+        }
     }
 }
