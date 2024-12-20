@@ -115,4 +115,4 @@ Binary tree
 Recursion
 Stack
 
-Queue can be used at signals for priority queue
+Queue

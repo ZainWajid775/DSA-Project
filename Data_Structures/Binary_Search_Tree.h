@@ -6,7 +6,6 @@ using namespace std;
 
 //Value at left of B_Node is smaller
 //Value at right of B_Node is bigger
-//No duplicate values
 
 struct B_Node
 {

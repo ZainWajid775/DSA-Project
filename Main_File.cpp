@@ -608,6 +608,9 @@ int main(int argc , char* argv[])
                                 c3 = true;
                             }
                         }
+                        
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     
                         while(!c4)
                         {
