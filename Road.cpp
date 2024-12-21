@@ -19,7 +19,7 @@ struct Road
     float conjestion;       // Percentage of road being used
     char status;            // 'b' blocked , 'a' active , 'c' conjestion , 'i' inactive
 
-    // to hold current vehicles on road
+    // List to hold current vehicles on road
     List vehicles_on_road;
 
     // Road Constructor
@@ -40,7 +40,7 @@ struct Road
     // Vehicle Movement Functions
 
     // Adds the vehicle to the front of the vehicle list
-    // Used when map is being simulated in main
+    // Used when map is being simulated in main , return any vehicle to the front if it couldnt move
     void add_vehicle_front(Vehicle v)
     {
         vehicles_on_road.insert_front(v);
