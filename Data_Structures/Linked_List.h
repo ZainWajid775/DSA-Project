@@ -155,6 +155,7 @@ class List
             return arr;
         }
 
+        // Checks if vehicle exists in list
         bool exists_in_list(Vehicle vehicle)
         {
             Node* temp = head;

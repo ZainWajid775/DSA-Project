@@ -12,6 +12,7 @@ class Circular_Queue
         int size;
 
     public:
+        // Constructor
         Circular_Queue(int s)
         {
             capacity = s;
@@ -21,6 +22,7 @@ class Circular_Queue
             rear = -1;
         }
         
+        // Destructor
         ~Circular_Queue()
         {
             delete[] queue;
@@ -35,6 +37,7 @@ class Circular_Queue
         {
             return (size == 0);
         }
+
         void push(int element)
         {
             if(is_full())
@@ -48,6 +51,7 @@ class Circular_Queue
                 size++;
             }
         }
+
         int pop()
         {
             if(is_empty())
@@ -62,6 +66,7 @@ class Circular_Queue
                 return item;
             }
         }
+
         int peek()
         {
             if(!is_empty())
@@ -70,20 +75,23 @@ class Circular_Queue
             }
             return -1;
         }
+
         int get_size()
         {
             return this->size;
         }
+
         bool isEmpty()
         {
             return size == 0;
         }
+
         bool isFull()
         {
             return size == capacity;
         }
 
-        // Uses merge sort for priority queue 
+        // Uses merge sort for priority queue functionality
         void sort()
         {
             int temp[size];
@@ -108,7 +116,8 @@ private:
     void merge_sort(int arr[] , int left , int right)
     {
         if (left < right)
-        {
+        {   
+            // Calculate mid point
             int mid = left + (right - left) / 2;
 
             // Sort left side
