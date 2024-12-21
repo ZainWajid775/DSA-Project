@@ -25,11 +25,13 @@ class Map
 {
     public:
         // Junctions stored in a vector (indexed by ID)
+        // The index is assigned to the junction when it is added to the map
         vector<Junction*> Junction_Matrix;
 
         // Road Matrix (adjacency matrix)
         vector<vector<Road*> > Road_Matrix;
 
+        // Map characteristics
         int num_of_junctions;
         string map_name;
 
@@ -41,6 +43,7 @@ class Map
             Road_Matrix.resize(num_of_junctions * 2 , vector<Road*>(num_of_junctions * 2, nullptr));
         }
 
+        // Used when reading map from files
         void road_resize()
         {
             Road_Matrix.resize(num_of_junctions * 2 , vector<Road*>(num_of_junctions * 2, nullptr));
@@ -82,6 +85,7 @@ class Map
         // Check if road exists by name
         bool has_road(const string name)
         {
+            // Iterate over each row and column of the road matrix
             for (const auto& road_row : Road_Matrix)
             {
                 for (const auto& road : road_row)
@@ -95,6 +99,7 @@ class Map
                     }
                 }
             }
+
             return false;
         }
 
@@ -109,6 +114,7 @@ class Map
         }
 
         // Check if there already a junction at the given coordinates
+        // Used when adding a junction to the map
         bool is_index_clear(int r , int c)
         {
             for (const auto& junction : Junction_Matrix)
@@ -123,21 +129,34 @@ class Map
         }
 
         // Check if the junction pair exists
+        // Used when adding a road to the map
         bool check_junction_pair(const string& j1 , const string& j2)
         {
-            if (j1 == j2) return false;
+            if (j1 == j2) 
+            {
+                return false;
+            }
 
-            bool j1_e = false, j2_e = false;
+            bool j1_e = false , j2_e = false;
+
+            // Iterate over the matrix and check if the junctions exist by comparing names
             for (const auto& junction : Junction_Matrix)
             {
                 Junction* temp = junction;
-                if (temp->name == j1) j1_e = true;
-                if (temp->name == j2) j2_e = true;
+                if (temp->name == j1) 
+                {
+                    j1_e = true;
+                }
+                if (temp->name == j2) 
+                {
+                    j2_e = true;
+                }
             }
             return j1_e && j2_e;
         }
 
         // Check if junction has connected roads
+        // Used when moving vehicles from the junction
         bool has_road_connection(Junction* junction)
         {
             for(int i = 0 ; i < Junction_Matrix.size() ; i++)
@@ -243,7 +262,8 @@ class Map
 
                                     junction_exists = true;
 
-                                    if (line == 1) // Middle line for junction name
+                                    // Middle line for junction name
+                                    if (line == 1) 
                                     { 
                                         cell_content = temp->name;
 
@@ -432,7 +452,7 @@ class Map
             }
         }
 
-        // Display in 2d plane
+        // Display in simple 2d plane
         void display_road_map_1()
         {
             if(num_of_junctions < 7)
@@ -441,9 +461,14 @@ class Map
                 const int cellHeight = 3; // Height for each cell to print road info in 3 lines
 
                 // Helper function to center text in a fixed-width cell
-                auto centerText = [](const string& text, int width) -> string {
+                auto centerText = [](const string& text, int width) -> string 
+                {
                     int padding = width - text.length();
-                    if (padding <= 0) return text.substr(0, width); // Truncate if text is too long
+                    if (padding <= 0) 
+                    {
+                        return text.substr(0, width); // Truncate if text is too long
+                    }
+
                     int leftPadding = padding / 2;
                     int rightPadding = padding - leftPadding;
                     return string(leftPadding, ' ') + text + string(rightPadding, ' ');
@@ -469,35 +494,49 @@ class Map
                             {
                                 // Print road details inside the cell
                                 if (r == 0)
-                                {
+                                {   
+                                    // Color code based on congestion level
                                     if(Road_Matrix[i][j]->conjestion < 50)
                                     {
-                                        cout << green << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                        cout << green << centerText(Road_Matrix[i][j]->name, cellWidth) << reset;
                                     }
                                     else if(Road_Matrix[i][j]->conjestion < 80)
                                     {
-                                        cout << yellow << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                        cout << yellow << centerText(Road_Matrix[i][j]->name, cellWidth) << reset;
                                     }
                                     else
                                     {
-                                        cout << red << centerText(Road_Matrix[i][j]->name, cellWidth) << reset; // Road name
+                                        cout << red << centerText(Road_Matrix[i][j]->name, cellWidth) << reset;
                                     }
                                 }
+                                // Vehicle count in first line
                                 else if (r == 1)
+                                {
                                     cout << centerText("Count: " + to_string(Road_Matrix[i][j]->veh_count), cellWidth);
+                                }
+                                // Distance in second line
                                 else if (r == 2)
+                                {
                                     cout << centerText("Distance: " + to_string(Road_Matrix[i][j]->distance), cellWidth);
+                                }
                             }
                             else
                             {
                                 // Print "Empty" for cells with no road
                                 if (r == 0)
+                                {
                                     cout << centerText("Empty", cellWidth);
+                                }
                                 else
-                                    cout << string(cellWidth, ' '); // Empty space for remaining lines
+                                {
+                                    // Empty space for remaining lines
+                                    cout << string(cellWidth, ' '); 
+                                }
                             }
-                            cout << "|"; // End border of each cell
+
+                            cout << "|";
                         }
+                        
                         cout << endl;
                     }
 
