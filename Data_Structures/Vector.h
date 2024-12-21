@@ -5,6 +5,9 @@
 #include <stdexcept>
 using namespace std;
 
+// Dynamic array that can resize itself
+
+// Template to allow for any data type
 template<typename T>
 
 class Vector
@@ -22,34 +25,46 @@ class Vector
             data = new T[capacity];
         }
 
+        // Resize the vector
         void resize(size_t new_size)
         {
             if(new_size > capacity)
             {
+                // Resize and allocate new memory
                 capacity = new_size * 2;
                 T* new_data = new T[capacity];
 
+                // Copy old data to new data
                 for(size_t i = 0 ; i < size ; i++)
                 {
                     new_data[i] = data[i];
                 }
 
+                // Free the old memory
                 delete[] data;
+
+                // Point to the new block
                 data = new_data;
             }
 
+            // Update the size
             size = new_size;
         }
 
+        // Resize a 2d-vector (Road_Matrix)
         void resize(size_t outer_size , size_t inner_size = 0)
-        {
+        {   
+            // Resize the outer vector
             resize(outer_size);
+
+            // Then resize each of the inner vector
             for(size_t i = 0 ; i < outer_size ; ++i)
             {
                 data[i].resize(inner_size);
             }
         }
 
+        // Overload the [] operator to access elements
         T& operator[](size_t index)
         {
             if(index >= size)
@@ -59,6 +74,7 @@ class Vector
             return data[index];
         }
 
+        // Add an element to the vector
         void push_back(const T& value)
         {
             if(size == capacity)
@@ -82,6 +98,7 @@ class Vector
 
         void clear()
         {
+            delete[] data;
             size = 0;
         }
 
