@@ -3,6 +3,8 @@
 
 
 using namespace std;
+
+// Messege printed for user to continue
 string continue_key = "Press the enter key to continue\n";    
 
 
@@ -15,6 +17,7 @@ void enter_to_continue()
     cout << continue_key << '\n';
     cin.get();
 }
+// For linux, use system("read")
 #else
 #include <unistd.h>
 // Function to print "enter to continue" and wait for user input
@@ -27,7 +30,7 @@ void enter_to_continue()
 
 #include <iostream>
 
-//Colour codes for custom text priting
+//Colour codes for custom text priting in bold
 #define RESET   "\033[0m"
 #define RED     "\033[1;31m"
 #define GREEN   "\033[1;32m"
@@ -37,34 +40,43 @@ void enter_to_continue()
 #define CYAN    "\033[1;36m"    
 
 // User Interface
-//Function to print a coloured line to improve readibility
+// Function to print a coloured line to improve readibility
 void line(string s)
 {
-    //If an empty string is passed, a line is printed 
+    // If an empty string is passed, a line is printed 
     if (s.empty())
     {
         cout << CYAN << "================================================================\n";
     }
-    //If the string has characters, they are printed in the center of the line 
+    // If the string has characters, they are printed in the center of the line 
     else
     {   
-            int length = 64;
-            int s_len = s.length();
-            int remaining_space = length - s_len;
-            int half = remaining_space / 2;
+        int length = 64;
 
-            for (int i = 0 ; i < half - 1 ; i++)
-            {
-                cout << CYAN << "=" ;
-            }
-            cout << "|";
-            cout << s;
-            cout << "|";
-            for (int i = 0 ; i < half - 1 ; i++)
-            {
-                cout << CYAN << "=" ;
-            }
-            cout << endl << RESET;
+        // Get string length
+        int s_len = s.length();
+
+        // Get numbre of spaces remaining
+        int remaining_space = length - s_len;
+
+        // Get half of the remaining space to center the string
+        int half = remaining_space / 2;
+
+        for (int i = 0 ; i < half - 1 ; i++)
+        {
+            cout << CYAN << "=" ;
+        }
+
+        cout << "|";
+        cout << s;
+        cout << "|";
+
+        for (int i = 0 ; i < half - 1 ; i++)
+        {
+            cout << CYAN << "=" ;
+        }
+
+        cout << endl << RESET;
     }
 
 }
