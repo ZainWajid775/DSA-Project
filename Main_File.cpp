@@ -15,6 +15,8 @@
 
 using namespace std;
 
+// Store current programs name
+// Used to restart the program in case of a segmentation fault
 const char* program_name;
 
 
@@ -60,6 +62,7 @@ string get_cred(string cred)
 {
     string input;
 
+    // Keep looping until input is not empty
     while(input == "")
     {
         cout << YELLOW << cred << " : " << RESET;
@@ -109,7 +112,8 @@ int main(int argc , char* argv[])
         system("clear");
         line("Login");
         cout << endl;
-    
+
+        // Read all accounts from accounts text
         try 
         {
             accounts = read_credentials();
@@ -221,7 +225,8 @@ int main(int argc , char* argv[])
             cout << "Map container is empty." RESET << endl;
             enter_to_continue();
         }
-    
+
+        // Store user input from main menu
         string menu_option;
     
         // Main menu
@@ -231,7 +236,8 @@ int main(int argc , char* argv[])
             system("clear");
             line("Main Menu");
             cout << endl;
-    
+
+            // Main menu options
             cout << RED "1. View Maps" << endl;
             cout << YELLOW "2. Create Map" << endl;
             cout << GREEN "3. Delete Map" << endl;
@@ -247,7 +253,8 @@ int main(int argc , char* argv[])
             
             // View maps
             if(menu_option == "1")
-            {
+            {   
+                // Used to clear the input buffer to avoid issues with misinput and the program running by itself
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
     
@@ -267,6 +274,7 @@ int main(int argc , char* argv[])
                 {
                     // Exit from this point
                     bool local_exit = false;
+
                     while(!local_exit)
                     {
                     
@@ -341,11 +349,13 @@ int main(int argc , char* argv[])
             {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
                 // Create a new map
                 system("clear");
                 line("Map Creator");
                 cout << endl;
-    
+
+                // Variables to store map details
                 string m_name;
                 int m_junctions;
     
@@ -395,6 +405,7 @@ int main(int argc , char* argv[])
     
                 // Create a new map
                 Map* new_map = new Map(m_name , m_junctions);
+
                 // Get map details
                 {
                     line("Map Editor");
@@ -470,6 +481,7 @@ int main(int argc , char* argv[])
                                 cout << RED << "Junction already exists at this index !" << RESET << endl;
                                 enter_to_continue();
                             }
+                            // Only verified if the junction is not already present and the row and column are valid
                             else
                             {
                                 c3 = true;
@@ -505,7 +517,8 @@ int main(int argc , char* argv[])
                         new_map->display_junctions();
                         cout << endl;
                         cout << YELLOW << "Junction map is only a visual aid !!!" << endl;
-    
+
+                        // Map must have a minimum of 2 junctions
                         if(j_count == 1)
                         {
                             cout << endl;
@@ -541,6 +554,7 @@ int main(int argc , char* argv[])
                     // Create roads
                     bool back_out_r = false;
                     int r_count = 0;
+
                     while(!back_out_r)
                     {
                         string r_name , r_distance , r_capacity , r_start , r_end;
@@ -708,8 +722,8 @@ int main(int argc , char* argv[])
                 system("clear");
                 line("Map Creator");
                 cout << endl;
-    
-                try
+
+                try 
                 {
                     store_map_container(map_container);
                     cout << GREEN << "Map Created and saved successfully !" << RESET << endl;
@@ -732,7 +746,6 @@ int main(int argc , char* argv[])
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
     
-                // Create a new map
                 system("clear");
                 line("Maps Editor");
                 cout << endl;
@@ -778,7 +791,8 @@ int main(int argc , char* argv[])
                         else
                         {
                             for(auto& map : map_container)
-                            {
+                            {   
+                                // Get confirmation to delete the map or back out
                                 if(map->map_name == del_option)
                                 {
                                 
@@ -842,6 +856,7 @@ int main(int argc , char* argv[])
                             enter_to_continue();
                         }
                     }
+                    // Case the container is empty
                     else
                     {
                         cout << YELLOW "There are no maps to show."<< endl;
@@ -935,13 +950,13 @@ int main(int argc , char* argv[])
                                 cout << endl << endl;
     
                                 cout << MAGENTA "Guide :" << endl << endl;
-                                cout << "1. An iteration is movement of the vehicles on the map from one place to another." << endl;
+                                cout << "1. An iteration is an attempt of each vehicle to move." << endl;
                                 cout << "2. After the simulation is complete , system removes all the vehicles from the map." << endl;
                                 cout << "3. No duplicate vehicle ID can be generated." << endl;
                                 cout << "4. Vehicle movement will be random." << endl;
                                 cout << "5. Vehicles will move to the least conjested road or junction depending on options." << endl;
                                 cout << "6. Vehicles start moving from the junctions." << endl;
-                                cout << "7. The system cannot handle cases where all the structures are filled." << endl;
+                                cout << "7. The system cannot handle cases where all the structures are filled (No movement in this case)." << endl;
                                 cout << endl;
     
     
@@ -1025,14 +1040,16 @@ int main(int argc , char* argv[])
                                     for(auto& junction : simulate_map->Junction_Matrix)
                                     {
                                         if(simulate_map->has_road_connection(junction))
-                                        {
+                                        {   
+                                            // Update the vehicles current index according to the junctions index in junction container
                                             Vehicle *temp = new Vehicle(simulate_map->get_index(junction->name)); 
                                             vehicle_container.push_back(temp);
     
                                             junction->add_vehicle(*temp);
     
                                             generated_veh_count++;
-    
+                                            
+                                            // Break if all vehicles are generated
                                             if(generated_veh_count == user_vehicles)
                                             {
                                                 break;
@@ -1076,7 +1093,8 @@ int main(int argc , char* argv[])
     
                                             // Move the vehicle if possible otherwise add it back to the junction in front
                                             if(move_vehicle_junction_to_road(*simulate_map , &veh_to_move))
-                                            {
+                                            {   
+                                                // Add the movement information to the stack if vehicle moved
                                                 string movement = "Vehicle " + to_string(veh_to_move.id) + " moved from "  + junction->name;
                                                 movement_info.push(movement);
                                             }
@@ -1096,11 +1114,14 @@ int main(int argc , char* argv[])
                                     cout << endl;
                                     simulate_map->display_road_map();
                                     cout << endl;
+
+                                    // If there are less than 7 junctions, only then user can see the block map
                                     simulate_map->display_road_map_1();
                                     cout << endl;
     
                                     int i_move_cycle_1 = 1;
-    
+
+                                    // Print movemnt information
                                     if(movement_info.is_empty())
                                     {
                                         cout << GREEN "No vehicles moved in this cycle" << RESET << endl;
@@ -1137,7 +1158,8 @@ int main(int argc , char* argv[])
     
                                                     // Move vehicle if possible othewise add it back
                                                     if(move_vehicle_road_to_junction(*simulate_map , &veh_to_move))
-                                                    {
+                                                    {  
+                                                        // Add movement information to stack if vehicle moved
                                                         string movement = "Vehicle " + to_string(veh_to_move.id) + " moved from "  + road->name;
                                                         movement_info.push(movement);
                                                     }
@@ -1159,9 +1181,12 @@ int main(int argc , char* argv[])
                                     cout << endl;
                                     simulate_map->display_road_map();
                                     cout << endl;
+
+                                    // If there are less than 7 junctions, only then user can see the block map
                                     simulate_map->display_road_map_1();
                                     cout << endl;
-    
+
+                                    // Print movement information
                                     int i_move_cycle_2 = 1;
                                     if(movement_info.is_empty())
                                     {
@@ -1209,6 +1234,7 @@ int main(int argc , char* argv[])
                                 } 
     
                                 cout << YELLOW << "Map Cleared" << endl << endl;
+                                cout << GREEN << "Simulation complete" << RESET << endl;
                                 enter_to_continue();
                             }   
                         }
@@ -1241,7 +1267,8 @@ int main(int argc , char* argv[])
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 
                 bool valid = false;
-    
+
+                // Loop until a valid username and password is entered
                 while(!valid)
                 {
                     system("clear");
@@ -1262,7 +1289,8 @@ int main(int argc , char* argv[])
                             break;
                         }
                     }
-    
+
+                    // Ensure no duplicate users are created
                     if(exists)
                     {
                         system("clear");
@@ -1333,7 +1361,8 @@ int main(int argc , char* argv[])
     
                         int index = 1;
                         cout << YELLOW "Users in Database" << endl << endl;
-    
+
+                        // Print all usernames in file
                         for(auto& user : accounts)
                         {
                             size_t pos = user.find('|');
@@ -1347,17 +1376,19 @@ int main(int argc , char* argv[])
                         cout << "Enter '0' to exit." << RESET << endl << endl;
     
                         del_user = get_cred("Username");
-    
+
                         for (auto it = accounts.begin() ; it != accounts.end();)
                         { 
                             size_t pos = it->find('|');
                             string result = it->substr(0 , pos);
                             string temp = it->substr(pos + 1);
-    
+
+                            // Iterate over the accounts and delete the user if found
                             if(del_user == result)
                             {
                                 bool local_exit = false;
-    
+
+                                // Enter the password to confirm deletion
                                 while(!local_exit)
                                 {
                                     system("clear");
@@ -1407,6 +1438,7 @@ int main(int argc , char* argv[])
                                 }
     
                             }
+                            // If user not found, continue iterating
                             else
                             {
                                 ++it;
@@ -1445,7 +1477,8 @@ int main(int argc , char* argv[])
                 {
                     // Create BST
                     B_Node* root = nullptr;
-    
+
+                    // Insert the number of junctions of each map in the container
                     for(auto& map : map_container)
                     {
                         root = insert(root , map->num_of_junctions);
@@ -1488,13 +1521,14 @@ int main(int argc , char* argv[])
                     int q_size;
                     bool queue_fill = false;
                     bool size_valid = false;
-    
+
+                    // Loop until a valid size is entered
                     while(!size_valid)
                     {
                         system("clear");
                         line("Priority Queue");
                         cout << endl << endl;
-    
+
                         cout << YELLOW << "Enter the number of vehicles to sort." << RESET << endl;
                         cout << YELLOW << "Enter '0' to exit." << RESET << endl << endl;
                         cout << YELLOW << "Type here : " << RESET;
@@ -1503,8 +1537,6 @@ int main(int argc , char* argv[])
                         {
                             cin.clear();
                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
-    
     
                             cout << endl;
                             cout << RED "Invalid size." RESET << endl;
@@ -1532,7 +1564,7 @@ int main(int argc , char* argv[])
     
     
                     }
-    
+
                     if(size_valid)
                     {
                         cout << endl;
@@ -1541,7 +1573,8 @@ int main(int argc , char* argv[])
     
                         Circular_Queue priority_queue(q_size);
                         int v_count = 1;
-    
+
+                        // Loop until the queue is filled
                         while(!queue_fill)
                         {
                         
@@ -1588,9 +1621,11 @@ int main(int argc , char* argv[])
                             }
     
                         }
-    
+
+                        // Merge sort the queue
                         priority_queue.sort();
-    
+
+                        // Print the queue with colour coding based on priority
                         system("clear");
                         line("Priority Queue");
                         cout << endl << endl;
@@ -1633,8 +1668,9 @@ int main(int argc , char* argv[])
             {
                 system("clear");
                 line("Save and Exit");
-                cout << endl;
-    
+                cout << endl;   
+
+                // Save the files before exiting
                 try
                 {
                     store_map_container(map_container);
@@ -1675,7 +1711,9 @@ int main(int argc , char* argv[])
         cout << RED << "Restarting program..." << RESET << endl;
         wait(1);
 
-        if (execl(program_name, program_name, (char*)NULL) == -1) {
+        // Program name is the name of the executable and first argument
+        if (execl(program_name, program_name, (char*)NULL) == -1) 
+        {
             std::cerr << RED "ERROR: Failed to restart program: " << strerror(errno) << RESET << endl;
         }
     }
@@ -1688,7 +1726,9 @@ int main(int argc , char* argv[])
         cout << RED << "Restarting program..." << RESET << endl;
         wait(1);
 
-        if (execl(program_name, program_name, (char*)NULL) == -1) {
+        // Program name is the name of the executable and first argument
+        if (execl(program_name, program_name, (char*)NULL) == -1) 
+        {
             std::cerr << RED "ERROR: Failed to restart program: " << strerror(errno) << RESET << endl;
         }
     }
