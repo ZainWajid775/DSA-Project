@@ -16,7 +16,8 @@ struct Vehicle
     int current_node;       // Stores column index of current node
 
     // Static storage for generated vehicles (to ensure unique IDs)
-    static Hashmap<int, Vehicle> generated_vehicle_ids; // Use the custom Hashmap
+    // No memory allocated yet
+    static Hashmap<int, Vehicle> generated_vehicle_ids; 
 
     // Random Vehicle Generation
     Vehicle(int generation_node)
@@ -26,18 +27,19 @@ struct Vehicle
         // ID of each vehicle must be unique, check if ID exists in Hashmap
         do
         {
-            id = rand() % 900 + 100; // Generate ID in range [100, 999]
-        } while (generated_vehicle_ids.find(id)); // Ensure ID is unique
+            // Generate a random 3-digit ID until it is unique
+            id = rand() % 900 + 100; 
+        } while (generated_vehicle_ids.find(id)); 
 
         current_node = generation_node;
-        generated_vehicle_ids.insert(id, *this); // Insert the generated vehicle
+        generated_vehicle_ids.insert(id, *this); 
 
     }
 
-    // Destructor: Remove the vehicle from Hashmap when destroyed
+    // Destructor
     ~Vehicle()
     {
-        generated_vehicle_ids.remove(id); // Clean up the generated vehicle
+        generated_vehicle_ids.remove(id);
     }
 
     // Overloaded equality operator to compare Vehicles by ID
@@ -47,7 +49,7 @@ struct Vehicle
     }
 };
 
-// Definition of the static member for managing vehicles
-Hashmap<int, Vehicle> Vehicle::generated_vehicle_ids(50); // 50 is the initial size of the table
+// Definition of the static member for managing vehicles with memory allocation
+Hashmap<int, Vehicle> Vehicle::generated_vehicle_ids(50);
 
 #endif // VEHICLE_H
