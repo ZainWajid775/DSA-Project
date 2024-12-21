@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include <string>
-#include <list>
 #include <unistd.h>
 #include "Vehicle.h"
 #include "Data_Structures/Linked_List.h"
