@@ -1,6 +1,8 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+// Includes function to move vehicles from road to junction and vice versa
+
 #include <iostream>
 #include <cstdlib>
 #include "Map.h" 
@@ -27,8 +29,6 @@ bool move_vehicle_road_to_junction(Map& map , Vehicle* vehicle)
             break;
         }
     }
-    
-
 
     // Check if the vehicle can move to junction
     // Column index of the current road corresponds to the junction
@@ -59,7 +59,6 @@ bool move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
     // If a road is full , it is not pushed into the queue
 
     // 1. Push in possible connections
-
     vector<Road*> road_arr;
     for(int i = 0 ; i < map.num_of_junctions ; i++)
     {   
@@ -78,6 +77,7 @@ bool move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
     {
         // 2. Sort road_arr according to road priority
         // Priority based on road availability
+        // Bubble sort
         int size = road_arr.size();
         for(int i = 0 ; i < size - 1 ; i++)
         {
@@ -115,6 +115,7 @@ bool move_vehicle_junction_to_road(Map& map , Vehicle* vehicle)
             }
         }
 
+        // Move the vehicle to the road with the least conjestion
         road_arr[0]->add_to_road(*vehicle);
         return true;
     }
