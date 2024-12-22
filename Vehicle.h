@@ -4,7 +4,6 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include <list>
 #include "Data_Structures/Hashmap.h"
 
 // Struct for Vehicle
