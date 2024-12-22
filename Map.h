@@ -5,10 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <iomanip>
-#include <set>
 #include <cstdlib>
-#include <pthread.h>
-#include <atomic>
 #include "Road.cpp"
 #include "Junction.cpp"
 #include "Data_Structures/Vector.h"
