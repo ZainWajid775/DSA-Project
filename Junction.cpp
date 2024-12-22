@@ -9,8 +9,10 @@
 using namespace std;
 
 // Struct for vertices (junction)
-struct Junction
+class Junction
 {
+    public:
+    
     // Node information
     string name;                // Name of the junction 
     int r , c;                  // Coordinates in 2D plane
