@@ -5,8 +5,10 @@
 using namespace std;
 
 // Struct for egde (roads)
-struct Road
+class Road
 {
+    public:
+    
     // Road characteristics
     string name;            // Name of the road 
     float distance;         // Kilometers
