@@ -244,7 +244,7 @@ int main(int argc , char* argv[])
             cout << BLUE "4. Simulation" << endl;
             cout << MAGENTA "5. Add a user" << endl;
             cout << RED "6. Remove a user" << endl;
-            cout << YELLOW "7. BST Tree Map sorting" << endl;
+            cout << YELLOW "7. BST based on map junction count" << endl;
             cout << GREEN << "8. Queue vehicle sorting" << endl;
             cout << BLUE "0. Exit" RESET << endl << endl;
             
@@ -1470,7 +1470,7 @@ int main(int argc , char* argv[])
     
             }
     
-            // AVL Tree
+            // BST Tree
             else if(menu_option == "7")
             {
                 if(map_container.size() != 0)
