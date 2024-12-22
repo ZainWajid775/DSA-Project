@@ -10,8 +10,6 @@
 
 using namespace std;
 
-
-
 bool move_vehicle_road_to_junction(Map& map , Vehicle* vehicle)
 {
     // Get vehicles current position

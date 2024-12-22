@@ -81,16 +81,6 @@ class Circular_Queue
             return this->size;
         }
 
-        bool isEmpty()
-        {
-            return size == 0;
-        }
-
-        bool isFull()
-        {
-            return size == capacity;
-        }
-
         // Uses merge sort for priority queue functionality
         void sort()
         {
